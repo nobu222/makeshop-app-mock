@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>在庫アラートAI</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 1366px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .nav-tab.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: #e2e8f0;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 24px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .card-description {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 16px 8px 40px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #64748b;
+        }
+
+        .inventory-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .inventory-table th,
+        .inventory-table td {
+            padding: 16px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .inventory-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .alert-row {
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .alert-row:hover {
+            background: #f8fafc;
+        }
+
+        .alert-row.critical {
+            background: #fef2f2;
+        }
+
+        .alert-row.warning {
+            background: #fffbeb;
+        }
+
+        .alert-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .alert-badge.critical {
+            background: #fecaca;
+            color: #dc2626;
+        }
+
+        .alert-badge.warning {
+            background: #fed7aa;
+            color: #ea580c;
+        }
+
+        .alert-badge.ok {
+            background: #bbf7d0;
+            color: #16a34a;
+        }
+
+        .panel {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .chart-container {
+            height: 300px;
+            background: #f8fafc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            margin: 16px 0;
+        }
+
+        .suggestions {
+            padding: 24px;
+        }
+
+        .suggestion-item {
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .suggestion-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .suggestion-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .wizard {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .wizard-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .step.active .step-number {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #16a34a;
+            color: white;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .supplier-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .supplier-card:hover {
+            border-color: #3b82f6;
+        }
+
+        .supplier-card.selected {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .back-btn {
+            margin-bottom: 24px;
+            padding: 8px 16px;
+            background: none;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+        }
+
+        .back-btn:hover {
+            background: #f8fafc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>在庫アラートAI</h1>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showScreen('dashboard')">ダッシュボード</button>
+                <button class="nav-tab" onclick="showScreen('panel')">詳細分析</button>
+                <button class="nav-tab" onclick="showScreen('wizard')">発注ウィザード</button>
+            </div>
+        </div>
+
+        <!-- ダッシュボード画面 -->
+        <div id="dashboard" class="screen active">
+            <div class="filters">
+                <div class="filter-group">
+                    <span>アラート:</span>
+                    <button class="filter-btn active">すべて</button>
+                    <button class="filter-btn">欠品リスク</button>
+                    <button class="filter-btn">過剰在庫</button>
+                </div>
+                <div class="search-box">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" class="search-input" placeholder="SKUで検索...">
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-title">SKU別在庫状況</div>
+                    <div class="card-description">在庫日数と発注推奨状況を確認できます</div>
+                </div>
+                <table class="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>在庫日数</th>
+                            <th>週間売上</th>
+                            <th>予測日数</th>
+                            <th>アラート</th>
+                            <th>推奨アクション</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="alert-row critical" onclick="showItemDetail('リネンシャツ')">
+                            <td><strong>リネンシャツ</strong></td>
+                            <td>12日</td>
+                            <td>¥180,000</td>
+                            <td>10日</td>
+                            <td>
+                                <span class="alert-badge critical">
+                                    <i data-lucide="alert-circle" size="12"></i>
+                                    欠品リスク
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" onclick="startOrder('リネンシャツ')">発注開始</button>
+                            </td>
+                        </tr>
+                        <tr class="alert-row warning" onclick="showItemDetail('ウールコート')">
+                            <td><strong>ウールコート</strong></td>
+                            <td>180日</td>
+                            <td>¥95,000</td>
+                            <td>365日</td>
+                            <td>
+                                <span class="alert-badge warning">
+                                    <i data-lucide="alert-triangle" size="12"></i>
+                                    過剰在庫
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-secondary" onclick="startSale('ウールコート')">セール検討</button>
+                            </td>
+                        </tr>
+                        <tr class="alert-row" onclick="showItemDetail('コットンパンツ')">
+                            <td><strong>コットンパンツ</strong></td>
+                            <td>25日</td>
+                            <td>¥150,000</td>
+                            <td>30日</td>
+                            <td>
+                                <span class="alert-badge ok">
+                                    <i data-lucide="check-circle" size="12"></i>
+                                    適正
+                                </span>
+                            </td>
+                            <td>-</td>
+                        </tr>
+                        <tr class="alert-row critical" onclick="showItemDetail('デニムジャケット')">
+                            <td><strong>デニムジャケット</strong></td>
+                            <td>5日</td>
+                            <td>¥200,000</td>
+                            <td>7日</td>
+                            <td>
+                                <span class="alert-badge critical">
+                                    <i data-lucide="alert-circle" size="12"></i>
+                                    緊急発注
+                                </span>
+                            </td>
+                            <td>
+                                <button class="btn btn-primary" onclick="startOrder('デニムジャケット')">緊急発注</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 詳細パネル画面 -->
+        <div id="panel" class="screen">
+            <button class="back-btn" onclick="showScreen('dashboard')">
+                <i data-lucide="arrow-left" size="16"></i>
+                ダッシュボードに戻る
+            </button>
+            
+            <div class="panel">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">リネンシャツ - 売上・在庫予測</div>
+                        <div class="card-description">過去30日の実績と今後30日の予測</div>
+                    </div>
+                    <div style="padding: 24px;">
+                        <div class="chart-container">
+                            <div style="text-align: center;">
+                                <i data-lucide="trending-up" size="48" style="margin-bottom: 16px;"></i>
+                                <div>売上トレンド + 在庫予測グラフ</div>
+                                <div style="font-size: 12px; margin-top: 8px;">
+                                    実装時: Chart.js / Recharts を使用
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 24px;">
+                            <div style="text-align: center; padding: 16px; background: #fef2f2; border-radius: 8px;">
+                                <div style="font-size: 24px; font-weight: 600; color: #dc2626;">5日</div>
+                                <div style="font-size: 14px; color: #64748b;">欠品予測</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: #eff6ff; border-radius: 8px;">
+                                <div style="font-size: 24px; font-weight: 600; color: #3b82f6;">150個</div>
+                                <div style="font-size: 14px; color: #64748b;">推奨発注数</div>
+                            </div>
+                            <div style="text-align: center; padding: 16px; background: #f0fdf4; border-radius: 8px;">
+                                <div style="font-size: 24px; font-weight: 600; color: #16a34a;">¥2.1M</div>
+                                <div style="font-size: 14px; color: #64748b;">予想売上影響</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">AI提案</div>
+                        <div class="card-description">データ分析に基づく推奨アクション</div>
+                    </div>
+                    <div class="suggestions">
+                        <div class="suggestion-item">
+                            <div class="suggestion-title">緊急発注推奨</div>
+                            <div style="font-size: 14px; color: #64748b; margin-bottom: 12px;">
+                                現在の売上ペースでは5日後に欠品の恐れがあります。リードタイム考慮で即時発注をお勧めします。
+                            </div>
+                            <div style="font-size: 12px; color: #64748b;">
+                                <i data-lucide="info" size="12"></i> 根拠: 直近7日平均売上 × 季節補正値 1.2
+                            </div>
+                            <div class="suggestion-actions">
+                                <button class="btn btn-primary" onclick="showScreen('wizard')">発注推奨数を確定</button>
+                                <button class="btn btn-secondary">詳細を確認</button>
+                            </div>
+                        </div>
+
+                        <div class="suggestion-item">
+                            <div class="suggestion-title">仕入先最適化</div>
+                            <div style="font-size: 14px; color: #64748b; margin-bottom: 12px;">
+                                仕入先Aは納期3日、仕入先Bは納期5日です。緊急性を考慮し仕入先Aを推奨します。
+                            </div>
+                            <div style="font-size: 12px; color: #64748b;">
+                                <i data-lucide="info" size="12"></i> コスト差: +5% / 納期短縮: -2日
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 発注ウィザード画面 -->
+        <div id="wizard" class="screen">
+            <button class="back-btn" onclick="showScreen('panel')">
+                <i data-lucide="arrow-left" size="16"></i>
+                詳細分析に戻る
+            </button>
+
+            <div class="wizard">
+                <div class="wizard-steps">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div>数量入力</div>
+                    </div>
+                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;"></div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div>仕入先確認</div>
+                    </div>
+                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;"></div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div>確定</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title">発注数量の入力 - リネンシャツ</div>
+                        <div class="card-description">AIが推奨する発注数量を確認・調整してください</div>
+                    </div>
+                    <div style="padding: 24px;">
+                        <div class="form-group">
+                            <label class="form-label">発注数量</label>
+                            <input type="number" class="form-input" value="150" id="orderQuantity">
+                            <div style="font-size: 12px; color: #64748b; margin-top: 4px;">
+                                AI推奨: 150個 (30日分の安全在庫を確保)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">納期希望</label>
+                            <select class="form-input">
+                                <option>可能な限り早く (3-5日)</option>
+                                <option>標準納期 (7-10日)</option>
+                                <option>コスト重視 (14日)</option>
+                            </select>
+                        </div>
+
+                        <div style="background: #f8fafc; padding: 16px; border-radius: 8px; margin: 24px 0;">
+                            <div style="font-weight: 600; margin-bottom: 8px;">発注予測</div>
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14px;">
+                                <div>予想コスト: <strong>¥450,000</strong></div>
+                                <div>在庫日数: <strong>45日分</strong></div>
+                                <div>次回発注目安: <strong>9月15日</strong></div>
+                                <div>利益インパクト: <strong>+¥180,000</strong></div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; gap: 16px;">
+                            <button class="btn btn-secondary">キャンセル</button>
+                            <button class="btn btn-primary" onclick="nextStep()">仕入先選択へ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lucide icons初期化
+        lucide.createIcons();
+
+        // 画面切り替え
+        function showScreen(screenId) {
+            // すべての画面を非表示
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            // 指定された画面を表示
+            document.getElementById(screenId).classList.add('active');
+            
+            // タブのアクティブ状態更新
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // 対応するタブをアクティブに
+            const tabs = document.querySelectorAll('.nav-tab');
+            if (screenId === 'dashboard') tabs[0].classList.add('active');
+            if (screenId === 'panel') tabs[1].classList.add('active');
+            if (screenId === 'wizard') tabs[2].classList.add('active');
+        }
+
+        // アイテム詳細表示
+        function showItemDetail(sku) {
+            showScreen('panel');
+        }
+
+        // 発注開始
+        function startOrder(sku) {
+            showScreen('wizard');
+        }
+
+        // セール開始
+        function startSale(sku) {
+            alert(`${sku}の処分セール作成機能（開発予定）`);
+        }
+
+        // ウィザード次のステップ
+        function nextStep() {
+            alert('ステップ2: 仕入先選択画面（開発予定）');
+        }
+
+        // フィルターボタンのクリックイベント
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // 同じグループ内の他のボタンからactiveクラスを除去
+                this.parentElement.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('active');
+                });
+                // クリックされたボタンにactiveクラスを追加
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>クーポンAI - MakeShop</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans JP', sans-serif;
+            background-color: #F5F7FA;
+            color: #1A1A1A;
+            font-size: 14px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1366px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        
+        .header {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #246BFD;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .icon {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+        
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 24px;
+        }
+        
+        .card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1A1A1A;
+        }
+        
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .badge.success {
+            background: #E8F5E8;
+            color: #2EB67D;
+        }
+        
+        .badge.warning {
+            background: #FFF3E0;
+            color: #F5A623;
+        }
+        
+        .badge.danger {
+            background: #FFE8E8;
+            color: #E03A3E;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 4px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: #246BFD;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1E5BDC;
+        }
+        
+        .btn-secondary {
+            background: #F5F7FA;
+            color: #666;
+            border: 1px solid #E1E5E9;
+        }
+        
+        .btn-secondary:hover {
+            background: #E8EBF0;
+        }
+        
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+        
+        .table th,
+        .table td {
+            padding: 12px 16px;
+            text-align: left;
+            border-bottom: 1px solid #E1E5E9;
+        }
+        
+        .table th {
+            font-weight: 600;
+            background: #F8F9FA;
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .table tr.warning {
+            background: #FFF9F0;
+        }
+        
+        .table tr.warning td {
+            border-color: #F5A623;
+        }
+        
+        .alert {
+            padding: 16px;
+            border-radius: 8px;
+            border-left: 4px solid;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+        
+        .alert.warning {
+            background: #FFF9F0;
+            border-color: #F5A623;
+            color: #A0500A;
+        }
+        
+        .recommendation-list {
+            list-style: none;
+            margin: 16px 0;
+        }
+        
+        .recommendation-list li {
+            padding: 16px;
+            background: #F8F9FA;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border-left: 4px solid #246BFD;
+        }
+        
+        .recommendation-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1A1A1A;
+        }
+        
+        .recommendation-details {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+        
+        .recommendation-roi {
+            font-weight: 600;
+            color: #2EB67D;
+        }
+        
+        .wizard {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .wizard-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding: 0 40px;
+        }
+        
+        .step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            flex: 1;
+        }
+        
+        .step::after {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 60%;
+            width: 80%;
+            height: 2px;
+            background: #E1E5E9;
+            z-index: 1;
+        }
+        
+        .step:last-child::after {
+            display: none;
+        }
+        
+        .step.active::after,
+        .step.completed::after {
+            background: #246BFD;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #E1E5E9;
+            color: #666;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .step.active .step-number,
+        .step.completed .step-number {
+            background: #246BFD;
+            color: white;
+        }
+        
+        .step-title {
+            font-size: 12px;
+            font-weight: 500;
+            color: #666;
+            text-align: center;
+        }
+        
+        .step.active .step-title {
+            color: #246BFD;
+            font-weight: 600;
+        }
+        
+        .wizard-content {
+            background: white;
+            border-radius: 8px;
+            padding: 32px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #1A1A1A;
+        }
+        
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .radio-item {
+            display: flex;
+            align-items: center;
+            padding: 16px;
+            border: 2px solid #E1E5E9;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .radio-item:hover {
+            border-color: #246BFD;
+            background: #F8FAFF;
+        }
+        
+        .radio-item.selected {
+            border-color: #246BFD;
+            background: #F8FAFF;
+        }
+        
+        .radio-item input[type="radio"] {
+            margin-right: 12px;
+        }
+        
+        .radio-content {
+            flex: 1;
+        }
+        
+        .radio-title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        
+        .radio-description {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .wizard-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 32px;
+            padding-top: 24px;
+            border-top: 1px solid #E1E5E9;
+        }
+        
+        .progress-info {
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .segment-control {
+            display: flex;
+            background: #F5F7FA;
+            border-radius: 4px;
+            padding: 4px;
+        }
+        
+        .segment-control button {
+            flex: 1;
+            padding: 8px 16px;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        
+        .segment-control button.active {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        
+        .input-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .input-field {
+            flex: 1;
+        }
+        
+        .input-field input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #E1E5E9;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        .preview-card {
+            background: #F8FAFF;
+            border: 1px solid #246BFD;
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+        
+        .preview-title {
+            font-weight: 600;
+            color: #246BFD;
+            margin-bottom: 8px;
+        }
+        
+        .preview-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2EB67D;
+        }
+        
+        .review-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #E1E5E9;
+        }
+        
+        .review-item:last-child {
+            border-bottom: none;
+        }
+        
+        .review-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .review-value {
+            font-weight: 600;
+            color: #1A1A1A;
+        }
+        
+        /* ツールチップスタイル */
+        .tooltip-container {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .tooltip-icon {
+            width: 16px;
+            height: 16px;
+            fill: #666;
+            cursor: help;
+            margin-left: 4px;
+        }
+        
+        .tooltip {
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1A1A1A;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.2s;
+            max-width: 250px;
+            white-space: normal;
+            text-align: center;
+        }
+        
+        .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: #1A1A1A;
+        }
+        
+        .tooltip-container:hover .tooltip {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* モーダルスタイル */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 8px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: scale(0.9);
+            transition: transform 0.3s;
+        }
+        
+        .modal-overlay.show .modal {
+            transform: scale(1);
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1A1A1A;
+            margin: 0;
+        }
+        
+        .modal-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .modal-body {
+            margin-bottom: 24px;
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+        
+        /* Snackbar スタイル */
+        .snackbar {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: #2EB67D;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 3000;
+            transform: translateX(100px);
+            opacity: 0;
+            transition: all 0.3s;
+        }
+        
+        .snackbar.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        
+        .snackbar-message {
+            flex: 1;
+            font-size: 14px;
+        }
+        
+        .snackbar-action {
+            background: none;
+            border: none;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- ヘッダー -->
+        <div class="header">
+            <h1>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="m22 2-5 10-5-4-5 10"/>
+                </svg>
+                クーポンAI - MakeShop
+            </h1>
+        </div>
+
+        <!-- 画面1: クーポンダッシュボード -->
+        <div class="screen active" id="dashboard">
+            <div class="card">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; margin-right: 8px;">
+                        <path d="M3 3v18h18"/>
+                        <path d="m19 9-5 5-4-4-3 3"/>
+                    </svg>
+                    クーポン効果サマリー
+                </h2>
+                
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
+                    <span class="badge success">今月のROI: 144%</span>
+                    <span style="font-size: 12px; color: #666;">先月比 +12%</span>
+                </div>
+
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>クーポン名</th>
+                            <th>
+                                発行数
+                                <span class="tooltip-container">
+                                    <svg class="tooltip-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                        <path d="M12 17h.01"/>
+                                    </svg>
+                                    <div class="tooltip">発行したクーポンの総数</div>
+                                </span>
+                            </th>
+                            <th>
+                                利用数
+                                <span class="tooltip-container">
+                                    <svg class="tooltip-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                        <path d="M12 17h.01"/>
+                                    </svg>
+                                    <div class="tooltip">実際に使用されたクーポン数</div>
+                                </span>
+                            </th>
+                            <th>
+                                売上効果
+                                <span class="tooltip-container">
+                                    <svg class="tooltip-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                        <path d="M12 17h.01"/>
+                                    </svg>
+                                    <div class="tooltip">クーポン経由で発生した売上金額</div>
+                                </span>
+                            </th>
+                            <th>
+                                ROI（投資対効果）
+                                <span class="tooltip-container">
+                                    <svg class="tooltip-icon" viewBox="0 0 24 24" fill="currentColor">
+                                        <circle cx="12" cy="12" r="10"/>
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                                        <path d="M12 17h.01"/>
+                                    </svg>
+                                    <div class="tooltip">ROI = 売上増加 ÷ 割引原価<br/>100%以上で効果あり</div>
+                                </span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>初回購入10%OFF</td>
+                            <td>120</td>
+                            <td>78</td>
+                            <td>¥530,000</td>
+                            <td><span class="badge success">212%</span></td>
+                        </tr>
+                        <tr class="warning">
+                            <td>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2" style="display: inline; margin-right: 8px; width: 16px; height: 16px;">
+                                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                                    <path d="M12 9v4"/>
+                                    <path d="m12 17 .01 0"/>
+                                </svg>
+                                リピーター5%OFF
+                            </td>
+                            <td>90</td>
+                            <td>21</td>
+                            <td>¥150,000</td>
+                            <td><span class="badge warning">83%</span></td>
+                        </tr>
+                        <tr>
+                            <td>まとめ買い15%OFF</td>
+                            <td>45</td>
+                            <td>32</td>
+                            <td>¥280,000</td>
+                            <td><span class="badge success">156%</span></td>
+                        </tr>
+                        <tr>
+                            <td>誕生日特典20%OFF</td>
+                            <td>35</td>
+                            <td>28</td>
+                            <td>¥320,000</td>
+                            <td><span class="badge success">189%</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" onclick="showScreen('advice')">
+                        効果改善の提案を見る
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+                            <path d="m9 18 6-6-6-6"/>
+                        </svg>
+                    </button>
+                    <button class="btn btn-secondary" onclick="showScreen('wizard')" style="margin-left: 12px;">
+                        新しいクーポンを作成
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 画面2: 改善アドバイスパネル -->
+        <div class="screen" id="advice">
+            <div class="card">
+                <button class="btn btn-secondary" onclick="showScreen('dashboard')" style="margin-bottom: 16px;">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+                        <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                    ダッシュボードに戻る
+                </button>
+                
+                <h2>改善アドバイス</h2>
+                
+                <div class="alert warning">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+                        <path d="M12 9v4"/>
+                        <path d="m12 17 .01 0"/>
+                    </svg>
+                    <div>
+                        <div style="font-weight: 600; margin-bottom: 4px;">効果が低いクーポンが見つかりました</div>
+                        <div>「リピーター5%OFF」のROIが83%と低下しています。利用率が23%と低く、効果的でない可能性があります。</div>
+                    </div>
+                </div>
+
+                <h3 style="margin: 24px 0 16px 0; font-size: 16px; font-weight: 600;">AIが提案する改善案</h3>
+                
+                <ul class="recommendation-list">
+                    <li>
+                        <div class="recommendation-title">条件変更: 購入金額3,000円以上で7%OFF</div>
+                        <div class="recommendation-details">対象: 過去30日以内に購入したリピーター | 期間: 7日間</div>
+                        <div class="recommendation-roi">予想ROI: 128%</div>
+                    </li>
+                    <li>
+                        <div class="recommendation-title">期間限定: 48時間限定で10%OFF</div>
+                        <div class="recommendation-details">対象: 過去30日以内に購入したリピーター | 緊急性を演出</div>
+                        <div class="recommendation-roi">予想ROI: 145%</div>
+                    </li>
+                    <li>
+                        <div class="recommendation-title">商品カテゴリ限定: 特定カテゴリで15%OFF</div>
+                        <div class="recommendation-details">対象: よく購入されるカテゴリに限定 | 期間: 14日間</div>
+                        <div class="recommendation-roi">予想ROI: 162%</div>
+                    </li>
+                </ul>
+
+                <div style="margin-top: 24px;">
+                    <button class="btn btn-primary" onclick="showScreen('wizard')">
+                        この条件でクーポンを発行する
+                    </button>
+                    <a href="#" class="btn btn-secondary" style="margin-left: 12px;">詳細分析を見る</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 画面3: クーポン新規発行ウィザード -->
+        <div class="screen" id="wizard">
+            <div class="wizard">
+                <button class="btn btn-secondary" onclick="showScreen('dashboard')" style="margin-bottom: 24px;">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+                        <path d="m15 18-6-6 6-6"/>
+                    </svg>
+                    ダッシュボードに戻る
+                </button>
+
+                <div class="wizard-steps">
+                    <div class="step active" id="step-1">
+                        <div class="step-number">1</div>
+                        <div class="step-title">目的選択</div>
+                    </div>
+                    <div class="step" id="step-2">
+                        <div class="step-number">2</div>
+                        <div class="step-title">対象セグメント</div>
+                    </div>
+                    <div class="step" id="step-3">
+                        <div class="step-number">3</div>
+                        <div class="step-title">割引設定</div>
+                    </div>
+                    <div class="step" id="step-4">
+                        <div class="step-number">4</div>
+                        <div class="step-title">確認</div>
+                    </div>
+                </div>
+
+                <div class="wizard-content">
+                    <!-- ステップ1: 目的選択 -->
+                    <div class="wizard-step" id="wizard-step-1">
+                        <h2>クーポンの目的を選択してください</h2>
+                        <div class="form-group">
+                            <div class="radio-group">
+                                <label class="radio-item" onclick="selectPurpose('new-customer')">
+                                    <input type="radio" name="purpose" value="new-customer">
+                                    <div class="radio-content">
+                                        <div class="radio-title">新規顧客獲得</div>
+                                        <div class="radio-description">初回購入を促進し、新しい顧客を獲得します</div>
+                                    </div>
+                                </label>
+                                <label class="radio-item" onclick="selectPurpose('retention')">
+                                    <input type="radio" name="purpose" value="retention">
+                                    <div class="radio-content">
+                                        <div class="radio-title">既存顧客の維持</div>
+                                        <div class="radio-description">リピート購入を促進し、顧客を維持します</div>
+                                    </div>
+                                </label>
+                                <label class="radio-item" onclick="selectPurpose('revenue')">
+                                    <input type="radio" name="purpose" value="revenue">
+                                    <div class="radio-content">
+                                        <div class="radio-title">売上向上</div>
+                                        <div class="radio-description">購入単価を上げ、全体の売上を向上させます</div>
+                                    </div>
+                                </label>
+                                <label class="radio-item" onclick="selectPurpose('inventory')">
+                                    <input type="radio" name="purpose" value="inventory">
+                                    <div class="radio-content">
+                                        <div class="radio-title">在庫処分</div>
+                                        <div class="radio-description">特定商品の在庫を効率的に処分します</div>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ステップ2: 対象セグメント -->
+                    <div class="wizard-step" id="wizard-step-2" style="display: none;">
+                        <h2>対象セグメントを設定</h2>
+                        <div class="form-group">
+                            <label class="form-label">セグメント設定方法</label>
+                            <div class="segment-control">
+                                <button type="button" class="active" onclick="selectSegmentMethod('ai')">
+                                    AI推奨 <span class="badge success" style="margin-left: 8px;">推奨</span>
+                                </button>
+                                <button type="button" onclick="selectSegmentMethod('manual')">手動設定</button>
+                            </div>
+                        </div>
+                        
+                        <div id="ai-segment" class="form-group">
+                            <div style="background: #F8FAFF; border: 1px solid #246BFD; border-radius: 8px; padding: 16px;">
+                                <div style="font-weight: 600; color: #246BFD; margin-bottom: 8px;">
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
+                                        <path d="M9.663 17h4.673M12 3l1.5 6L21 12l-7.5 3L12 21l-1.5-6L3 12l7.5-3L12 3Z"/>
+                                    </svg>
+                                    AI推奨セグメント
+                                </div>
+                                <div style="color: #666; margin-bottom: 12px;">
+                                    過去の購買データから最適なセグメントを分析しました
+                                </div>
+                                <div>
+                                    <strong>対象:</strong> 過去30日以内に購入した顧客（推定142人）<br>
+                                    <strong>特徴:</strong> 平均購入金額 ¥4,500 | リピート率 68%<br>
+                                    <strong>予想効果:</strong> 利用率 45% | ROI 156%
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ステップ3: 割引設定 -->
+                    <div class="wizard-step" id="wizard-step-3" style="display: none;">
+                        <h2>割引率と期間を設定</h2>
+                        <div class="input-group">
+                            <div class="input-row">
+                                <div class="input-field">
+                                    <label class="form-label">割引率</label>
+                                    <input type="number" value="10" min="5" max="50" id="discount-rate">
+                                    <span style="font-size: 12px; color: #666;">%</span>
+                                </div>
+                                <div class="input-field">
+                                    <label class="form-label">最低購入金額</label>
+                                    <input type="number" value="3000" min="0" id="min-amount">
+                                    <span style="font-size: 12px; color: #666;">円</span>
+                                </div>
+                            </div>
+                            <div class="input-row">
+                                <div class="input-field">
+                                    <label class="form-label">有効期間</label>
+                                    <input type="number" value="7" min="1" max="30" id="validity-days">
+                                    <span style="font-size: 12px; color: #666;">日間</span>
+                                </div>
+                                <div class="input-field">
+                                    <label class="form-label">発行上限</label>
+                                    <input type="number" value="100" min="10" id="issue-limit">
+                                    <span style="font-size: 12px; color: #666;">枚</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="preview-card">
+                            <div class="preview-title">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
+                                    <path d="M9.663 17h4.673M12 3l1.5 6L21 12l-7.5 3L12 21l-1.5-6L3 12l7.5-3L12 3Z"/>
+                                </svg>
+                                予想ROI
+                            </div>
+                            <div class="preview-value" id="roi-preview">142%</div>
+                            <div style="font-size: 12px; color: #666; margin-top: 4px;">
+                                予想利用率: 38% | 予想売上効果: ¥285,000
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ステップ4: 確認 -->
+                    <div class="wizard-step" id="wizard-step-4" style="display: none;">
+                        <h2>設定内容の確認</h2>
+                        <div class="review-item">
+                            <span class="review-label">目的</span>
+                            <span class="review-value" id="review-purpose">既存顧客の維持</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">対象セグメント</span>
+                            <span class="review-value">過去30日以内に購入した顧客（142人）</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">割引内容</span>
+                            <span class="review-value">10%OFF（3,000円以上購入時）</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">有効期間</span>
+                            <span class="review-value">7日間</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">発行上限</span>
+                            <span class="review-value">100枚</span>
+                        </div>
+                        <div class="review-item">
+                            <span class="review-label">予想ROI</span>
+                            <span class="review-value" style="color: #2EB67D; font-weight: 700;">142%</span>
+                        </div>
+                        
+                        <div style="margin-top: 24px; padding: 16px; background: #E8F5E8; border-radius: 8px;">
+                            <div style="font-weight: 600; color: #2EB67D; margin-bottom: 4px;">
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                                    <path d="m9 11 3 3L22 4"/>
+                                </svg>
+                                発行準備完了
+                            </div>
+                            <div style="font-size: 12px; color: #666;">
+                                この設定でクーポンを発行しますか？発行後の修正はできません。
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="wizard-actions">
+                        <div class="progress-info">
+                            <span id="step-info">ステップ 1 / 4</span>
+                        </div>
+                        <div>
+                            <button class="btn btn-secondary" id="prev-btn" onclick="prevStep()" style="display: none;">戻る</button>
+                            <button class="btn btn-primary" id="next-btn" onclick="nextStep()">次へ</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 確認モーダル -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3 class="modal-title">クーポン発行の確認</h3>
+                <button class="modal-close" onclick="closeConfirmModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="margin-bottom: 16px;">
+                    <div style="font-weight: 600; margin-bottom: 8px;">発行内容を確認してください</div>
+                    <div style="font-size: 12px; color: #666;">発行後の修正はできませんので、内容をよくご確認ください。</div>
+                </div>
+                
+                <div class="review-item">
+                    <span class="review-label">対象セグメント</span>
+                    <span class="review-value">過去30日以内に購入した顧客（142人）</span>
+                </div>
+                <div class="review-item">
+                    <span class="review-label">割引内容</span>
+                    <span class="review-value">10%OFF（3,000円以上購入時）</span>
+                </div>
+                <div class="review-item">
+                    <span class="review-label">有効期間</span>
+                    <span class="review-value">7日間</span>
+                </div>
+                <div class="review-item">
+                    <span class="review-label">期待ROI</span>
+                    <span class="review-value" style="color: #2EB67D; font-weight: 700;">142%</span>
+                </div>
+                
+                <div style="margin-top: 16px; padding: 12px; background: #F8FAFF; border-radius: 4px; border-left: 4px solid #246BFD;">
+                    <div style="font-size: 12px; color: #666;">
+                        <strong>メール配信予定:</strong> 本日中に対象者142名にクーポンメールを送信します
+                    </div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeConfirmModal()">戻る</button>
+                <button class="btn btn-primary" onclick="confirmIssueCoupon()">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                        <path d="m9 11 3 3L22 4"/>
+                    </svg>
+                    確定する
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Snackbar -->
+    <div class="snackbar" id="snackbar">
+        <div class="snackbar-message">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px;">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
+                <path d="m9 11 3 3L22 4"/>
+            </svg>
+            クーポンを発行しました。取り消す場合は
+        </div>
+        <button class="snackbar-action" onclick="undoCouponIssue()">元に戻す</button>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedPurpose = '';
+        let selectedSegmentMethod = 'ai';
+
+        function showScreen(screenId) {
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => screen.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+            
+            if (screenId === 'wizard') {
+                currentStep = 1;
+                updateWizardStep();
+            }
+        }
+
+        function selectPurpose(purpose) {
+            selectedPurpose = purpose;
+            const items = document.querySelectorAll('.radio-item');
+            items.forEach(item => item.classList.remove('selected'));
+            event.currentTarget.classList.add('selected');
+            
+            const purposeMap = {
+                'new-customer': '新規顧客獲得',
+                'retention': '既存顧客の維持',
+                'revenue': '売上向上',
+                'inventory': '在庫処分'
+            };
+            document.getElementById('review-purpose').textContent = purposeMap[purpose];
+        }
+
+        function selectSegmentMethod(method) {
+            selectedSegmentMethod = method;
+            const buttons = document.querySelectorAll('.segment-control button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function nextStep() {
+            if (currentStep < 4) {
+                currentStep++;
+                updateWizardStep();
+            } else {
+                // 最終ステップで確認モーダルを表示
+                showConfirmModal();
+            }
+        }
+
+        function showConfirmModal() {
+            document.getElementById('confirmModal').classList.add('show');
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.remove('show');
+        }
+
+        function confirmIssueCoupon() {
+            // モーダルを閉じる
+            closeConfirmModal();
+            
+            // Snackbarを表示
+            const snackbar = document.getElementById('snackbar');
+            snackbar.classList.add('show');
+            
+            // 3秒後にSnackbarを非表示にしてダッシュボードに戻る
+            setTimeout(() => {
+                snackbar.classList.remove('show');
+                setTimeout(() => {
+                    showScreen('dashboard');
+                }, 300); // フェードアウト完了後
+            }, 3000);
+        }
+
+        function undoCouponIssue() {
+            // Snackbarを非表示
+            document.getElementById('snackbar').classList.remove('show');
+            
+            // アラート表示（実際の実装では発行取り消し処理）
+            setTimeout(() => {
+                alert('クーポン発行を取り消しました。\n\n対象者へのメール送信は停止されました。');
+            }, 300);
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateWizardStep();
+            }
+        }
+
+        function updateWizardStep() {
+            // ステップ表示の更新
+            const steps = document.querySelectorAll('.step');
+            steps.forEach((step, index) => {
+                step.classList.remove('active', 'completed');
+                if (index + 1 < currentStep) {
+                    step.classList.add('completed');
+                } else if (index + 1 === currentStep) {
+                    step.classList.add('active');
+                }
+            });
+
+            // ウィザードコンテンツの表示切り替え
+            const wizardSteps = document.querySelectorAll('.wizard-step');
+            wizardSteps.forEach((step, index) => {
+                step.style.display = index + 1 === currentStep ? 'block' : 'none';
+            });
+
+            // ボタンの表示制御
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            const stepInfo = document.getElementById('step-info');
+
+            prevBtn.style.display = currentStep > 1 ? 'inline-flex' : 'none';
+            nextBtn.textContent = currentStep === 4 ? '発行内容を確認する' : '次へ';
+            stepInfo.textContent = `ステップ ${currentStep} / 4`;
+        }
+
+        // 割引率変更時のROI更新
+        document.addEventListener('DOMContentLoaded', function() {
+            const discountInput = document.getElementById('discount-rate');
+            const roiPreview = document.getElementById('roi-preview');
+            
+            if (discountInput && roiPreview) {
+                discountInput.addEventListener('input', function() {
+                    const rate = parseInt(this.value);
+                    let roi = 150 - (rate * 2); // 簡単な計算例
+                    roi = Math.max(roi, 80); // 最低値を設定
+                    roiPreview.textContent = roi + '%';
+                });
+            }
+
+            // モーダル関連のイベントリスナー
+            const modalOverlay = document.getElementById('confirmModal');
+            
+            // ESCキーでモーダルを閉じる
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && modalOverlay.classList.contains('show')) {
+                    closeConfirmModal();
+                }
+            });
+            
+            // モーダル外クリックで閉じる
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) {
+                    closeConfirmModal();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRMセグメントAI</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.1/umd/lucide.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 1366px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        .header {
+            background: white;
+            padding: 16px 24px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+        }
+
+        .nav-tab {
+            padding: 8px 16px;
+            background: #f1f5f9;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .nav-tab.active {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .nav-tab:hover:not(.active) {
+            background: #e2e8f0;
+        }
+
+        .screen {
+            display: none;
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .filters {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .filter-btn {
+            padding: 8px 16px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+
+        .filter-btn.active {
+            background: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .filter-btn:hover:not(.active) {
+            background: #f8fafc;
+        }
+
+        .segments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .segment-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .segment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            border-color: #3b82f6;
+        }
+
+        .segment-card.new-customers {
+            border-left: 4px solid #22c55e;
+        }
+
+        .segment-card.loyal-customers {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .segment-card.at-risk {
+            border-left: 4px solid #ef4444;
+        }
+
+        .segment-card.dormant {
+            border-left: 4px solid #f59e0b;
+        }
+
+        .segment-header {
+            padding: 20px 20px 16px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .segment-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .segment-icon {
+            padding: 8px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .segment-icon.new {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .segment-icon.loyal {
+            background: #dbeafe;
+            color: #2563eb;
+        }
+
+        .segment-icon.risk {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .segment-icon.dormant {
+            background: #fef3c7;
+            color: #d97706;
+        }
+
+        .segment-count {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .segment-stats {
+            padding: 0 20px 20px 20px;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .stat-label {
+            color: #64748b;
+        }
+
+        .stat-value {
+            font-weight: 600;
+        }
+
+        .churn-prediction {
+            margin-top: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+        }
+
+        .churn-label {
+            font-size: 12px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .confidence-high {
+            background: #16a34a;
+        }
+
+        .confidence-medium {
+            background: #f59e0b;
+        }
+
+        .confidence-low {
+            background: #ef4444;
+        }
+
+        .confidence-text {
+            font-size: 11px;
+            color: #64748b;
+            margin-top: 4px;
+        }
+
+        .back-btn {
+            margin-bottom: 24px;
+            padding: 8px 16px;
+            background: none;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+        }
+
+        .back-btn:hover {
+            background: #f8fafc;
+        }
+
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .chart-container {
+            height: 300px;
+            background: #f8fafc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            margin: 16px 0;
+            border: 2px dashed #e2e8f0;
+        }
+
+        .characteristics-list {
+            padding: 24px;
+        }
+
+        .characteristic-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .characteristic-item:last-child {
+            border-bottom: none;
+        }
+
+        .characteristic-label {
+            font-weight: 500;
+        }
+
+        .characteristic-value {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .action-buttons {
+            padding: 24px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 12px;
+            margin-bottom: 8px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #64748b;
+            border: 1px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .btn-success {
+            background: #16a34a;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #15803d;
+        }
+
+        .wizard {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .wizard-steps {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-number {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .step.active .step-number {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #16a34a;
+            color: white;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+        }
+
+        .ai-recommendations {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .ai-recommendations h4 {
+            color: #1e40af;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .recommendation-item {
+            padding: 12px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid #e2e8f0;
+        }
+
+        .recommendation-item:hover {
+            border-color: #3b82f6;
+        }
+
+        .recommendation-item.selected {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+
+        .ltv-preview {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .ltv-value {
+            font-size: 36px;
+            font-weight: 700;
+            color: #16a34a;
+            margin-bottom: 8px;
+        }
+
+        .ltv-label {
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .template-suggestions {
+            margin-top: 24px;
+            padding: 24px;
+            background: #fefce8;
+            border-radius: 8px;
+            border: 1px solid #fde047;
+        }
+
+        .template-suggestions h4 {
+            color: #a16207;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .template-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #fbbf24;
+        }
+
+        .template-info h5 {
+            margin-bottom: 4px;
+            color: #1f2937;
+        }
+
+        .template-description {
+            font-size: 14px;
+            color: #64748b;
+        }
+
+        .create-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .create-btn:hover {
+            background: #2563eb;
+        }
+
+        .segment-preview {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .preview-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .preview-stat {
+            text-align: center;
+            padding: 16px;
+            background: white;
+            border-radius: 8px;
+        }
+
+        .preview-stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .preview-stat-label {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .tooltip {
+            position: relative;
+            cursor: help;
+        }
+
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1f2937;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>CRMセグメントAI</h1>
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showScreen('dashboard')">セグメント一覧</button>
+                <button class="nav-tab" onclick="showScreen('detail')">詳細分析</button>
+                <button class="nav-tab" onclick="showScreen('wizard')">作成ウィザード</button>
+            </div>
+        </div>
+
+        <!-- セグメントダッシュボード画面 -->
+        <div id="dashboard" class="screen active">
+            <div class="dashboard-header">
+                <h2>顧客セグメント一覧</h2>
+                <div class="filters">
+                    <span>フィルター:</span>
+                    <button class="filter-btn active">すべて</button>
+                    <button class="filter-btn">新規顧客</button>
+                    <button class="filter-btn">ロイヤル顧客</button>
+                    <button class="filter-btn">離脱リスク</button>
+                    <button class="btn btn-primary" onclick="showScreen('wizard')">
+                        <i data-lucide="plus" size="16"></i>
+                        新しいセグメント作成
+                    </button>
+                </div>
+            </div>
+
+            <div class="segments-grid">
+                <div class="segment-card new-customers" onclick="showSegmentDetail('新規顧客')">
+                    <div class="segment-header">
+                        <div>
+                            <div class="segment-title">新規顧客</div>
+                            <div class="segment-count">1,247</div>
+                        </div>
+                        <div class="segment-icon new">
+                            <i data-lucide="user-plus" size="24"></i>
+                        </div>
+                    </div>
+                    <div class="segment-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">平均購入額</span>
+                            <span class="stat-value">¥8,500</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">購入回数</span>
+                            <span class="stat-value">1.2回</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">直近30日成長率</span>
+                            <span class="stat-value" style="color: #16a34a;">+18%</span>
+                        </div>
+                        <div class="churn-prediction">
+                            <div class="churn-label">リピート購入予測</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill confidence-medium" style="width: 68%;"></div>
+                            </div>
+                            <div class="confidence-text">68% (信頼度: 中)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="segment-card loyal-customers" onclick="showSegmentDetail('ロイヤル顧客')">
+                    <div class="segment-header">
+                        <div>
+                            <div class="segment-title">ロイヤル顧客</div>
+                            <div class="segment-count">524</div>
+                        </div>
+                        <div class="segment-icon loyal">
+                            <i data-lucide="crown" size="24"></i>
+                        </div>
+                    </div>
+                    <div class="segment-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">平均購入額</span>
+                            <span class="stat-value">¥24,800</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">購入回数</span>
+                            <span class="stat-value">8.3回</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">予想LTV</span>
+                            <span class="stat-value" style="color: #3b82f6;">¥185,000</span>
+                        </div>
+                        <div class="churn-prediction">
+                            <div class="churn-label">継続購入予測</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill confidence-high" style="width: 92%;"></div>
+                            </div>
+                            <div class="confidence-text">92% (信頼度: 高)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="segment-card at-risk" onclick="showSegmentDetail('離脱リスク顧客')">
+                    <div class="segment-header">
+                        <div>
+                            <div class="segment-title">離脱リスク顧客</div>
+                            <div class="segment-count">892</div>
+                        </div>
+                        <div class="segment-icon risk">
+                            <i data-lucide="alert-triangle" size="24"></i>
+                        </div>
+                    </div>
+                    <div class="segment-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">最終購入</span>
+                            <span class="stat-value">45日前</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">過去購入額</span>
+                            <span class="stat-value">¥52,000</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">挽回施策必要</span>
+                            <span class="stat-value" style="color: #ef4444;">緊急</span>
+                        </div>
+                        <div class="churn-prediction">
+                            <div class="churn-label">チャーン予測</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill confidence-low" style="width: 78%;"></div>
+                            </div>
+                            <div class="confidence-text">78% (信頼度: 高)</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="segment-card dormant" onclick="showSegmentDetail('休眠顧客')">
+                    <div class="segment-header">
+                        <div>
+                            <div class="segment-title">休眠顧客</div>
+                            <div class="segment-count">2,156</div>
+                        </div>
+                        <div class="segment-icon dormant">
+                            <i data-lucide="user-x" size="24"></i>
+                        </div>
+                    </div>
+                    <div class="segment-stats">
+                        <div class="stat-item">
+                            <span class="stat-label">最終購入</span>
+                            <span class="stat-value">180日前</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">過去購入額</span>
+                            <span class="stat-value">¥28,500</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">復活可能性</span>
+                            <span class="stat-value" style="color: #f59e0b;">中</span>
+                        </div>
+                        <div class="churn-prediction">
+                            <div class="churn-label">復活予測</div>
+                            <div class="confidence-bar">
+                                <div class="confidence-fill confidence-medium" style="width: 35%;"></div>
+                            </div>
+                            <div class="confidence-text">35% (信頼度: 中)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- セグメント詳細画面 -->
+        <div id="detail" class="screen">
+            <button class="back-btn" onclick="showScreen('dashboard')">
+                <i data-lucide="arrow-left" size="16"></i>
+                セグメント一覧に戻る
+            </button>
+
+            <div class="detail-layout">
+                <div class="card">
+                    <div style="padding: 24px;">
+                        <h2 style="margin-bottom: 24px;">ロイヤル顧客セグメント - 詳細分析</h2>
+                        
+                        <div class="chart-container">
+                            <div style="text-align: center;">
+                                <i data-lucide="pie-chart" size="48" style="margin-bottom: 16px;"></i>
+                                <div>RFM分析・購入行動分布グラフ</div>
+                                <div style="font-size: 12px; margin-top: 8px;">
+                                    実装時: Chart.js / D3.js でインタラクティブ表示
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 style="margin: 24px 0 16px 0;">セグメント特徴</h3>
+                        <div class="characteristics-list">
+                            <div class="characteristic-item">
+                                <span class="characteristic-label">購入頻度</span>
+                                <span class="characteristic-value">月2.1回 (平均の3.2倍)</span>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="characteristic-label">客単価</span>
+                                <span class="characteristic-value">¥24,800 (平均+85%)</span>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="characteristic-label">お気に入りカテゴリ</span>
+                                <span class="characteristic-value">プレミアムライン (76%)</span>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="characteristic-label">購入タイミング</span>
+                                <span class="characteristic-value">新商品発売直後 (68%)</span>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="characteristic-label">レビュー投稿率</span>
+                                <span class="characteristic-value">89% (平均の4.1倍)</span>
+                            </div>
+                            <div class="characteristic-item">
+                                <span class="characteristic-label">
+                                    予想LTV 
+                                    <span class="tooltip" data-tooltip="過去の購入パターンから算出した生涯価値">
+                                        <i data-lucide="info" size="14"></i>
+                                    </span>
+                                </span>
+                                <span class="characteristic-value">¥185,000</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="card" style="margin-bottom: 24px;">
+                        <div style="padding: 24px;">
+                            <h3 style="margin-bottom: 16px;">推奨アクション</h3>
+                            <div style="margin-bottom: 20px; font-size: 14px; color: #64748b;">
+                                AI分析により、このセグメントに最適な施策を提案します
+                            </div>
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" onclick="createCoupon('ロイヤル顧客')">
+                                <i data-lucide="ticket" size="16"></i>
+                                限定クーポン作成
+                            </button>
+                            <button class="btn btn-success" onclick="createEmail('ロイヤル顧客')">
+                                <i data-lucide="mail" size="16"></i>
+                                メール配信
+                            </button>
+                            <button class="btn btn-secondary" onclick="exportSegment()">
+                                <i data-lucide="download" size="16"></i>
+                                顧客リスト出力
+                            </button>
+                            <button class="btn btn-secondary" onclick="scheduleAction()">
+                                <i data-lucide="calendar" size="16"></i>
+                                定期配信設定
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div style="padding: 24px;">
+                            <h3 style="margin-bottom: 16px;">施策効果予測</h3>
+                            <div style="background: #f0fdf4; padding: 16px; border-radius: 8px; margin-bottom: 16px;">
+                                <div style="font-weight: 600; color: #16a34a; margin-bottom: 8px;">
+                                    限定クーポン配信の場合
+                                </div>
+                                <div style="font-size: 14px; color: #166534;">
+                                    開封率: 78% / 利用率: 45% / 予想売上: +¥680,000
+                                </div>
+                            </div>
+                            <div style="background: #eff6ff; padding: 16px; border-radius: 8px;">
+                                <div style="font-weight: 600; color: #2563eb; margin-bottom: 8px;">
+                                    新商品先行案内の場合
+                                </div>
+                                <div style="font-size: 14px; color: #1d4ed8;">
+                                    開封率: 85% / 購入率: 62% / 予想売上: +¥920,000
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- セグメント作成ウィザード画面 -->
+        <div id="wizard" class="screen">
+            <button class="back-btn" onclick="showScreen('dashboard')">
+                <i data-lucide="arrow-left" size="16"></i>
+                セグメント一覧に戻る
+            </button>
+
+            <div class="wizard">
+                <div class="wizard-steps">
+                    <div class="step active">
+                        <div class="step-number">1</div>
+                        <div>AI推奨条件</div>
+                    </div>
+                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;"></div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <div>条件調整</div>
+                    </div>
+                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;"></div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <div>確認・保存</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div style="padding: 24px;">
+                        <h2 style="margin-bottom: 24px;">新しいセグメント作成</h2>
+                        
+                        <div class="form-group">
+                            <label class="form-label">セグメント作成目的</label>
+                            <select class="form-select" onchange="generateRecommendations(this.value)">
+                                <option value="">目的を選択してください</option>
+                                <option value="retention">既存顧客の維持</option>
+                                <option value="acquisition">新規顧客獲得</option>
+                                <option value="reactivation">休眠顧客の復活</option>
+                                <option value="upsell">アップセル・クロスセル</option>
+                                <option value="churn">チャーン防止</option>
+                            </select>
+                        </div>
+
+                        <div class="ai-recommendations">
+                            <h4>
+                                <i data-lucide="brain" size="20"></i>
+                                AI推奨セグメント条件
+                            </h4>
+                            <div class="recommendation-item selected" onclick="selectRecommendation(this)">
+                                <div style="font-weight: 600; margin-bottom: 4px;">高価値休眠顧客</div>
+                                <div style="font-size: 14px; color: #64748b;">
+                                    過去購入額¥30,000以上 × 最終購入60-180日前 × メール開封履歴あり
+                                </div>
+                            </div>
+                            <div class="recommendation-item" onclick="selectRecommendation(this)">
+                                <div style="font-weight: 600; margin-bottom: 4px;">新規リピート予備軍</div>
+                                <div style="font-size: 14px; color: #64748b;">
+                                    初回購入30日以内 × 購入額¥10,000以上 × サイト滞在時間5分以上
+                                </div>
+                            </div>
+                            <div class="recommendation-item" onclick="selectRecommendation(this)">
+                                <div style="font-weight: 600; margin-bottom: 4px;">プレミアム候補</div>
+                                <div style="font-size: 14px; color: #64748b;">
+                                    購入回数3回以上 × 平均客単価¥15,000以上 × レビュー投稿経験あり
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-grid">
+                            <div>
+                                <div class="form-group">
+                                    <label class="form-label">購入回数</label>
+                                    <select class="form-select" onchange="updatePreview()">
+                                        <option value="">指定なし</option>
+                                        <option value="1">1回（新規顧客）</option>
+                                        <option value="2-3" selected>2-3回</option>
+                                        <option value="4-10">4-10回</option>
+                                        <option value="11+">11回以上</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">最終購入日</label>
+                                    <select class="form-select" onchange="updatePreview()">
+                                        <option value="">指定なし</option>
+                                        <option value="7">7日以内</option>
+                                        <option value="30">30日以内</option>
+                                        <option value="60-180" selected>60-180日前</option>
+                                        <option value="180+">180日以上前</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">累計購入額</label>
+                                    <select class="form-select" onchange="updatePreview()">
+                                        <option value="">指定なし</option>
+                                        <option value="10000-">¥10,000以上</option>
+                                        <option value="30000-" selected>¥30,000以上</option>
+                                        <option value="50000-">¥50,000以上</option>
+                                        <option value="100000-">¥100,000以上</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="form-group">
+                                    <label class="form-label">メール配信</label>
+                                    <select class="form-select" onchange="updatePreview()">
+                                        <option value="">指定なし</option>
+                                        <option value="subscribed" selected>配信許可済み</option>
+                                        <option value="engaged">開封履歴あり</option>
+                                        <option value="unsubscribed">配信停止</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">年齢層</label>
+                                    <select class="form-select" onchange="updatePreview()">
+                                        <option value="" selected>指定なし</option>
+                                        <option value="20s">20代</option>
+                                        <option value="30s">30代</option>
+                                        <option value="40s">40代</option>
+                                        <option value="50s+">50代以上</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label">好み商品カテゴリ</label>
+                                    <select class="form-select" onchange="updatePreview()">
+                                        <option value="" selected>指定なし</option>
+                                        <option value="premium">プレミアムライン</option>
+                                        <option value="casual">カジュアルライン</option>
+                                        <option value="accessories">アクセサリー</option>
+                                        <option value="seasonal">季節商品</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="segment-preview">
+                            <h4 style="margin-bottom: 16px;">セグメントプレビュー</h4>
+                            <div style="font-size: 14px; color: #64748b; margin-bottom: 16px;">
+                                現在の条件で抽出される顧客データ
+                            </div>
+                            <div class="preview-stats">
+                                <div class="preview-stat">
+                                    <div class="preview-stat-value" id="previewCount">847</div>
+                                    <div class="preview-stat-label">対象顧客数</div>
+                                </div>
+                                <div class="preview-stat">
+                                    <div class="preview-stat-value" id="previewAvg">¥42,500</div>
+                                    <div class="preview-stat-label">平均購入額</div>
+                                </div>
+                                <div class="preview-stat">
+                                    <div class="preview-stat-value" id="previewFreq">2.8回</div>
+                                    <div class="preview-stat-label">平均購入回数</div>
+                                </div>
+                                <div class="preview-stat">
+                                    <div class="preview-stat-value" id="previewEmail">92%</div>
+                                    <div class="preview-stat-label">メール到達率</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="ltv-preview">
+                            <div class="ltv-value" id="ltvValue">¥125,000</div>
+                            <div class="ltv-label">予想LTV（リアルタイム計算）</div>
+                        </div>
+
+                        <div class="template-suggestions">
+                            <h4>
+                                <i data-lucide="lightbulb" size="20"></i>
+                                推奨施策テンプレート
+                            </h4>
+                            <div class="template-item">
+                                <div class="template-info">
+                                    <h5>復活応援クーポン</h5>
+                                    <div class="template-description">
+                                        20%OFFクーポン + 送料無料（有効期限: 2週間）
+                                    </div>
+                                </div>
+                                <button class="create-btn" onclick="createCouponTemplate()">作成</button>
+                            </div>
+                            <div class="template-item">
+                                <div class="template-info">
+                                    <h5>パーソナライズメール</h5>
+                                    <div class="template-description">
+                                        過去購入商品ベースの新商品おすすめメール
+                                    </div>
+                                </div>
+                                <button class="create-btn" onclick="createEmailTemplate()">作成</button>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: flex-end; gap: 16px; margin-top: 32px;">
+                            <button class="btn btn-secondary">下書き保存</button>
+                            <button class="btn btn-primary" onclick="createSegment()">
+                                <i data-lucide="save" size="16"></i>
+                                セグメント作成
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Lucide icons初期化
+        lucide.createIcons();
+
+        // 画面切り替え
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(screen => {
+                screen.classList.remove('active');
+            });
+            
+            document.getElementById(screenId).classList.add('active');
+            
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            const tabs = document.querySelectorAll('.nav-tab');
+            if (screenId === 'dashboard') tabs[0].classList.add('active');
+            if (screenId === 'detail') tabs[1].classList.add('active');
+            if (screenId === 'wizard') tabs[2].classList.add('active');
+        }
+
+        // セグメント詳細表示
+        function showSegmentDetail(segmentName) {
+            showScreen('detail');
+        }
+
+        // AI推奨条件生成
+        function generateRecommendations(purpose) {
+            // 実際の実装では、選択された目的に基づいてAIが条件を生成
+            updatePreview();
+        }
+
+        // 推奨条件選択
+        function selectRecommendation(element) {
+            document.querySelectorAll('.recommendation-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            element.classList.add('selected');
+            updatePreview();
+        }
+
+        // プレビュー更新
+        function updatePreview() {
+            // 実際の実装では、条件に基づいてリアルタイムで顧客数とLTVを計算
+            const count = Math.floor(Math.random() * 1000) + 500;
+            const avgPurchase = Math.floor(Math.random() * 30000) + 25000;
+            const frequency = (Math.random() * 3 + 1).toFixed(1);
+            const emailRate = Math.floor(Math.random() * 20) + 80;
+            const ltv = Math.floor(Math.random() * 100000) + 80000;
+
+            document.getElementById('previewCount').textContent = count.toLocaleString();
+            document.getElementById('previewAvg').textContent = '¥' + avgPurchase.toLocaleString();
+            document.getElementById('previewFreq').textContent = frequency + '回';
+            document.getElementById('previewEmail').textContent = emailRate + '%';
+            document.getElementById('ltvValue').textContent = '¥' + ltv.toLocaleString();
+        }
+
+        // アクション実行関数
+        function createCoupon(segment) {
+            alert(`${segment}向けクーポン作成機能（開発予定）`);
+        }
+
+        function createEmail(segment) {
+            alert(`${segment}向けメール配信機能（開発予定）`);
+        }
+
+        function exportSegment() {
+            alert('顧客リスト出力機能（開発予定）');
+        }
+
+        function scheduleAction() {
+            alert('定期配信設定機能（開発予定）');
+        }
+
+        function createCouponTemplate() {
+            alert('クーポンテンプレート作成機能（開発予定）');
+        }
+
+        function createEmailTemplate() {
+            alert('メールテンプレート作成機能（開発予定）');
+        }
+
+        function createSegment() {
+            alert('セグメント作成完了！\nダッシュボードに新しいセグメントが追加されます。');
+            showScreen('dashboard');
+        }
+
+        // フィルターボタンのクリックイベント
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (!this.classList.contains('btn-primary')) {
+                    this.parentElement.querySelectorAll('.filter-btn:not(.btn-primary)').forEach(b => {
+                        b.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                }
+            });
+        });
+
+        // 初期プレビュー更新
+        updatePreview();
+    </script>
+</body>
+</html>
