@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>クーポンAI - MakeShop</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Noto Sans JP', sans-serif;
             background-color: #F5F7FA;
@@ -20,19 +21,19 @@
             font-size: 14px;
             min-height: 100vh;
         }
-        
+
         .container {
             max-width: 1366px;
             margin: 0 auto;
             padding: 24px;
         }
-        
+
         .header {
             background: white;
             padding: 16px 24px;
             border-radius: 8px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -40,7 +41,7 @@
 
         .back-to-home {
             position: absolute;
-            top: 0;
+            top: 24px;
             left: 0;
             background: #246BFD;
             color: white;
@@ -63,7 +64,7 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(36, 107, 253, 0.4);
         }
-        
+
         .header h1 {
             font-size: 24px;
             font-weight: 600;
@@ -72,36 +73,36 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .icon {
             width: 24px;
             height: 24px;
             fill: currentColor;
         }
-        
+
         .screen {
             display: none;
         }
-        
+
         .screen.active {
             display: block;
         }
-        
+
         .card {
             background: white;
             border-radius: 8px;
             padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             margin-bottom: 24px;
         }
-        
+
         .card h2 {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 16px;
             color: #1A1A1A;
         }
-        
+
         .badge {
             display: inline-flex;
             align-items: center;
@@ -110,22 +111,22 @@
             font-size: 12px;
             font-weight: 500;
         }
-        
+
         .badge.success {
             background: #E8F5E8;
             color: #2EB67D;
         }
-        
+
         .badge.warning {
             background: #FFF3E0;
             color: #F5A623;
         }
-        
+
         .badge.danger {
             background: #FFE8E8;
             color: #E03A3E;
         }
-        
+
         .btn {
             padding: 12px 24px;
             border-radius: 4px;
@@ -139,39 +140,39 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .btn-primary {
             background: #246BFD;
             color: white;
         }
-        
+
         .btn-primary:hover {
             background: #1E5BDC;
         }
-        
+
         .btn-secondary {
             background: #F5F7FA;
             color: #666;
             border: 1px solid #E1E5E9;
         }
-        
+
         .btn-secondary:hover {
             background: #E8EBF0;
         }
-        
+
         .table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 16px;
         }
-        
+
         .table th,
         .table td {
             padding: 12px 16px;
             text-align: left;
             border-bottom: 1px solid #E1E5E9;
         }
-        
+
         .table th {
             font-weight: 600;
             background: #F8F9FA;
@@ -180,15 +181,15 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .table tr.warning {
             background: #FFF9F0;
         }
-        
+
         .table tr.warning td {
             border-color: #F5A623;
         }
-        
+
         .alert {
             padding: 16px;
             border-radius: 8px;
@@ -198,18 +199,18 @@
             align-items: flex-start;
             gap: 12px;
         }
-        
+
         .alert.warning {
             background: #FFF9F0;
             border-color: #F5A623;
             color: #A0500A;
         }
-        
+
         .recommendation-list {
             list-style: none;
             margin: 16px 0;
         }
-        
+
         .recommendation-list li {
             padding: 16px;
             background: #F8F9FA;
@@ -217,36 +218,36 @@
             margin-bottom: 12px;
             border-left: 4px solid #246BFD;
         }
-        
+
         .recommendation-title {
             font-weight: 600;
             margin-bottom: 8px;
             color: #1A1A1A;
         }
-        
+
         .recommendation-details {
             font-size: 12px;
             color: #666;
             margin-bottom: 8px;
         }
-        
+
         .recommendation-roi {
             font-weight: 600;
             color: #2EB67D;
         }
-        
+
         .wizard {
             max-width: 800px;
             margin: 0 auto;
         }
-        
+
         .wizard-steps {
             display: flex;
             justify-content: space-between;
             margin-bottom: 32px;
             padding: 0 40px;
         }
-        
+
         .step {
             display: flex;
             flex-direction: column;
@@ -254,7 +255,7 @@
             position: relative;
             flex: 1;
         }
-        
+
         .step::after {
             content: '';
             position: absolute;
@@ -265,16 +266,16 @@
             background: #E1E5E9;
             z-index: 1;
         }
-        
+
         .step:last-child::after {
             display: none;
         }
-        
+
         .step.active::after,
         .step.completed::after {
             background: #246BFD;
         }
-        
+
         .step-number {
             width: 40px;
             height: 40px;
@@ -289,49 +290,49 @@
             position: relative;
             z-index: 2;
         }
-        
+
         .step.active .step-number,
         .step.completed .step-number {
             background: #246BFD;
             color: white;
         }
-        
+
         .step-title {
             font-size: 12px;
             font-weight: 500;
             color: #666;
             text-align: center;
         }
-        
+
         .step.active .step-title {
             color: #246BFD;
             font-weight: 600;
         }
-        
+
         .wizard-content {
             background: white;
             border-radius: 8px;
             padding: 32px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
-        
+
         .form-group {
             margin-bottom: 24px;
         }
-        
+
         .form-label {
             display: block;
             font-weight: 600;
             margin-bottom: 8px;
             color: #1A1A1A;
         }
-        
+
         .radio-group {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-        
+
         .radio-item {
             display: flex;
             align-items: center;
@@ -341,35 +342,35 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        
+
         .radio-item:hover {
             border-color: #246BFD;
             background: #F8FAFF;
         }
-        
+
         .radio-item.selected {
             border-color: #246BFD;
             background: #F8FAFF;
         }
-        
+
         .radio-item input[type="radio"] {
             margin-right: 12px;
         }
-        
+
         .radio-content {
             flex: 1;
         }
-        
+
         .radio-title {
             font-weight: 600;
             margin-bottom: 4px;
         }
-        
+
         .radio-description {
             font-size: 12px;
             color: #666;
         }
-        
+
         .wizard-actions {
             display: flex;
             justify-content: space-between;
@@ -378,19 +379,19 @@
             padding-top: 24px;
             border-top: 1px solid #E1E5E9;
         }
-        
+
         .progress-info {
             font-size: 12px;
             color: #666;
         }
-        
+
         .segment-control {
             display: flex;
             background: #F5F7FA;
             border-radius: 4px;
             padding: 4px;
         }
-        
+
         .segment-control button {
             flex: 1;
             padding: 8px 16px;
@@ -401,28 +402,28 @@
             font-size: 14px;
             transition: all 0.2s;
         }
-        
+
         .segment-control button.active {
             background: white;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        
+
         .input-group {
             display: flex;
             flex-direction: column;
             gap: 16px;
         }
-        
+
         .input-row {
             display: flex;
             gap: 16px;
             align-items: center;
         }
-        
+
         .input-field {
             flex: 1;
         }
-        
+
         .input-field input {
             width: 100%;
             padding: 12px;
@@ -430,7 +431,7 @@
             border-radius: 4px;
             font-size: 14px;
         }
-        
+
         .preview-card {
             background: #F8FAFF;
             border: 1px solid #246BFD;
@@ -438,46 +439,46 @@
             padding: 16px;
             margin-top: 16px;
         }
-        
+
         .preview-title {
             font-weight: 600;
             color: #246BFD;
             margin-bottom: 8px;
         }
-        
+
         .preview-value {
             font-size: 18px;
             font-weight: 700;
             color: #2EB67D;
         }
-        
+
         .review-item {
             display: flex;
             justify-content: space-between;
             padding: 12px 0;
             border-bottom: 1px solid #E1E5E9;
         }
-        
+
         .review-item:last-child {
             border-bottom: none;
         }
-        
+
         .review-label {
             font-weight: 500;
             color: #666;
         }
-        
+
         .review-value {
             font-weight: 600;
             color: #1A1A1A;
         }
-        
+
         /* ツールチップスタイル */
         .tooltip-container {
             position: relative;
             display: inline-block;
         }
-        
+
         .tooltip-icon {
             width: 16px;
             height: 16px;
@@ -485,7 +486,7 @@
             cursor: help;
             margin-left: 4px;
         }
-        
+
         .tooltip {
             position: absolute;
             bottom: 120%;
@@ -505,7 +506,7 @@
             white-space: normal;
             text-align: center;
         }
-        
+
         .tooltip::after {
             content: '';
             position: absolute;
@@ -515,12 +516,12 @@
             border: 4px solid transparent;
             border-top-color: #1A1A1A;
         }
-        
+
         .tooltip-container:hover .tooltip {
             opacity: 1;
             visibility: visible;
         }
-        
+
         /* モーダルスタイル */
         .modal-overlay {
             position: fixed;
@@ -537,12 +538,12 @@
             visibility: hidden;
             transition: all 0.3s;
         }
-        
+
         .modal-overlay.show {
             opacity: 1;
             visibility: visible;
         }
-        
+
         .modal {
             background: white;
             border-radius: 8px;
@@ -554,24 +555,24 @@
             transform: scale(0.9);
             transition: transform 0.3s;
         }
-        
+
         .modal-overlay.show .modal {
             transform: scale(1);
         }
-        
+
         .modal-header {
             display: flex;
             align-items: center;
             margin-bottom: 16px;
         }
-        
+
         .modal-title {
             font-size: 18px;
             font-weight: 600;
             color: #1A1A1A;
             margin: 0;
         }
-        
+
         .modal-close {
             margin-left: auto;
             background: none;
@@ -580,17 +581,17 @@
             cursor: pointer;
             color: #666;
         }
-        
+
         .modal-body {
             margin-bottom: 24px;
         }
-        
+
         .modal-actions {
             display: flex;
             gap: 12px;
             justify-content: flex-end;
         }
-        
+
         /* Snackbar スタイル */
         .snackbar {
             position: fixed;
@@ -600,7 +601,7 @@
             color: white;
             padding: 12px 16px;
             border-radius: 4px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -609,17 +610,17 @@
             opacity: 0;
             transition: all 0.3s;
         }
-        
+
         .snackbar.show {
             transform: translateX(0);
             opacity: 1;
         }
-        
+
         .snackbar-message {
             flex: 1;
             font-size: 14px;
         }
-        
+
         .snackbar-action {
             background: none;
             border: none;
@@ -630,20 +631,21 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container" style="position: relative; padding-top: 60px;">
         <a href="index.html" class="back-to-home">
             <span>←</span>
             ポータルに戻る
         </a>
-        
+
         <!-- ヘッダー -->
         <div class="header">
             <h1>
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                    <circle cx="9" cy="7" r="4"/>
-                    <path d="m22 2-5 10-5-4-5 10"/>
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+                    <circle cx="9" cy="7" r="4" />
+                    <path d="m22 2-5 10-5-4-5 10" />
                 </svg>
                 クーポンAI - MakeShop
             </h1>
@@ -653,13 +655,14 @@
         <div class="screen active" id="dashboard">
             <div class="card">
                 <h2>
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; margin-right: 8px;">
-                        <path d="M3 3v18h18"/>
-                        <path d="m19 9-5 5-4-4-3 3"/>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="display: inline; margin-right: 8px;">
+                        <path d="M3 3v18h18" />
+                        <path d="m19 9-5 5-4-4-3 3" />
                     </svg>
                     クーポン効果サマリー
                 </h2>
-                
+
                 <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px;">
                     <span class="badge success">今月のROI: 144%</span>
                     <span style="font-size: 12px; color: #666;">先月比 +12%</span>
@@ -673,9 +676,9 @@
                                 発行数
                                 <span class="tooltip-container">
                                     <svg class="tooltip-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                                        <path d="M12 17h.01"/>
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                        <path d="M12 17h.01" />
                                     </svg>
                                     <div class="tooltip">発行したクーポンの総数</div>
                                 </span>
@@ -684,9 +687,9 @@
                                 利用数
                                 <span class="tooltip-container">
                                     <svg class="tooltip-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                                        <path d="M12 17h.01"/>
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                        <path d="M12 17h.01" />
                                     </svg>
                                     <div class="tooltip">実際に使用されたクーポン数</div>
                                 </span>
@@ -695,9 +698,9 @@
                                 売上効果
                                 <span class="tooltip-container">
                                     <svg class="tooltip-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                                        <path d="M12 17h.01"/>
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                        <path d="M12 17h.01" />
                                     </svg>
                                     <div class="tooltip">クーポン経由で発生した売上金額</div>
                                 </span>
@@ -706,11 +709,11 @@
                                 ROI（投資対効果）
                                 <span class="tooltip-container">
                                     <svg class="tooltip-icon" viewBox="0 0 24 24" fill="currentColor">
-                                        <circle cx="12" cy="12" r="10"/>
-                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
-                                        <path d="M12 17h.01"/>
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                                        <path d="M12 17h.01" />
                                     </svg>
-                                    <div class="tooltip">ROI = 売上増加 ÷ 割引原価<br/>100%以上で効果あり</div>
+                                    <div class="tooltip">ROI = 売上増加 ÷ 割引原価<br />100%以上で効果あり</div>
                                 </span>
                             </th>
                         </tr>
@@ -725,10 +728,12 @@
                         </tr>
                         <tr class="warning">
                             <td>
-                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2" style="display: inline; margin-right: 8px; width: 16px; height: 16px;">
-                                    <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-                                    <path d="M12 9v4"/>
-                                    <path d="m12 17 .01 0"/>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2"
+                                    style="display: inline; margin-right: 8px; width: 16px; height: 16px;">
+                                    <path
+                                        d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                                    <path d="M12 9v4" />
+                                    <path d="m12 17 .01 0" />
                                 </svg>
                                 リピーター5%OFF
                             </td>
@@ -757,8 +762,9 @@
                 <div style="margin-top: 24px;">
                     <button class="btn btn-primary" onclick="showScreen('advice')">
                         効果改善の提案を見る
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
-                            <path d="m9 18 6-6-6-6"/>
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                            style="width: 16px; height: 16px;">
+                            <path d="m9 18 6-6-6-6" />
                         </svg>
                     </button>
                     <button class="btn btn-secondary" onclick="showScreen('wizard')" style="margin-left: 12px;">
@@ -772,19 +778,20 @@
         <div class="screen" id="advice">
             <div class="card">
                 <button class="btn btn-secondary" onclick="showScreen('dashboard')" style="margin-bottom: 16px;">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
-                        <path d="m15 18-6-6 6-6"/>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width: 16px; height: 16px;">
+                        <path d="m15 18-6-6 6-6" />
                     </svg>
                     ダッシュボードに戻る
                 </button>
-                
+
                 <h2>改善アドバイス</h2>
-                
+
                 <div class="alert warning">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
-                        <path d="M12 9v4"/>
-                        <path d="m12 17 .01 0"/>
+                        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z" />
+                        <path d="M12 9v4" />
+                        <path d="m12 17 .01 0" />
                     </svg>
                     <div>
                         <div style="font-weight: 600; margin-bottom: 4px;">効果が低いクーポンが見つかりました</div>
@@ -793,7 +800,7 @@
                 </div>
 
                 <h3 style="margin: 24px 0 16px 0; font-size: 16px; font-weight: 600;">AIが提案する改善案</h3>
-                
+
                 <ul class="recommendation-list">
                     <li>
                         <div class="recommendation-title">条件変更: 購入金額3,000円以上で7%OFF</div>
@@ -825,8 +832,9 @@
         <div class="screen" id="wizard">
             <div class="wizard">
                 <button class="btn btn-secondary" onclick="showScreen('dashboard')" style="margin-bottom: 24px;">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
-                        <path d="m15 18-6-6 6-6"/>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width: 16px; height: 16px;">
+                        <path d="m15 18-6-6 6-6" />
                     </svg>
                     ダッシュボードに戻る
                 </button>
@@ -900,12 +908,16 @@
                                 <button type="button" onclick="selectSegmentMethod('manual')">手動設定</button>
                             </div>
                         </div>
-                        
+
                         <div id="ai-segment" class="form-group">
-                            <div style="background: #F8FAFF; border: 1px solid #246BFD; border-radius: 8px; padding: 16px;">
+                            <div
+                                style="background: #F8FAFF; border: 1px solid #246BFD; border-radius: 8px; padding: 16px;">
                                 <div style="font-weight: 600; color: #246BFD; margin-bottom: 8px;">
-                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
-                                        <path d="M9.663 17h4.673M12 3l1.5 6L21 12l-7.5 3L12 21l-1.5-6L3 12l7.5-3L12 3Z"/>
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2"
+                                        style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
+                                        <path
+                                            d="M9.663 17h4.673M12 3l1.5 6L21 12l-7.5 3L12 21l-1.5-6L3 12l7.5-3L12 3Z" />
                                     </svg>
                                     AI推奨セグメント
                                 </div>
@@ -950,11 +962,12 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="preview-card">
                             <div class="preview-title">
-                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
-                                    <path d="M9.663 17h4.673M12 3l1.5 6L21 12l-7.5 3L12 21l-1.5-6L3 12l7.5-3L12 3Z"/>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
+                                    <path d="M9.663 17h4.673M12 3l1.5 6L21 12l-7.5 3L12 21l-1.5-6L3 12l7.5-3L12 3Z" />
                                 </svg>
                                 予想ROI
                             </div>
@@ -992,12 +1005,13 @@
                             <span class="review-label">予想ROI</span>
                             <span class="review-value" style="color: #2EB67D; font-weight: 700;">142%</span>
                         </div>
-                        
+
                         <div style="margin-top: 24px; padding: 16px; background: #E8F5E8; border-radius: 8px;">
                             <div style="font-weight: 600; color: #2EB67D; margin-bottom: 4px;">
-                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
-                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                                    <path d="m9 11 3 3L22 4"/>
+                                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                    style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                                    <path d="m9 11 3 3L22 4" />
                                 </svg>
                                 発行準備完了
                             </div>
@@ -1012,7 +1026,8 @@
                             <span id="step-info">ステップ 1 / 4</span>
                         </div>
                         <div>
-                            <button class="btn btn-secondary" id="prev-btn" onclick="prevStep()" style="display: none;">戻る</button>
+                            <button class="btn btn-secondary" id="prev-btn" onclick="prevStep()"
+                                style="display: none;">戻る</button>
                             <button class="btn btn-primary" id="next-btn" onclick="nextStep()">次へ</button>
                         </div>
                     </div>
@@ -1033,7 +1048,7 @@
                     <div style="font-weight: 600; margin-bottom: 8px;">発行内容を確認してください</div>
                     <div style="font-size: 12px; color: #666;">発行後の修正はできませんので、内容をよくご確認ください。</div>
                 </div>
-                
+
                 <div class="review-item">
                     <span class="review-label">対象セグメント</span>
                     <span class="review-value">過去30日以内に購入した顧客（142人）</span>
@@ -1050,8 +1065,9 @@
                     <span class="review-label">期待ROI</span>
                     <span class="review-value" style="color: #2EB67D; font-weight: 700;">142%</span>
                 </div>
-                
-                <div style="margin-top: 16px; padding: 12px; background: #F8FAFF; border-radius: 4px; border-left: 4px solid #246BFD;">
+
+                <div
+                    style="margin-top: 16px; padding: 12px; background: #F8FAFF; border-radius: 4px; border-left: 4px solid #246BFD;">
                     <div style="font-size: 12px; color: #666;">
                         <strong>メール配信予定:</strong> 本日中に対象者142名にクーポンメールを送信します
                     </div>
@@ -1060,9 +1076,10 @@
             <div class="modal-actions">
                 <button class="btn btn-secondary" onclick="closeConfirmModal()">戻る</button>
                 <button class="btn btn-primary" onclick="confirmIssueCoupon()">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
-                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                        <path d="m9 11 3 3L22 4"/>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width: 16px; height: 16px;">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                        <path d="m9 11 3 3L22 4" />
                     </svg>
                     確定する
                 </button>
@@ -1073,9 +1090,10 @@
     <!-- Snackbar -->
     <div class="snackbar" id="snackbar">
         <div class="snackbar-message">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; margin-right: 8px;">
-                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                <path d="m9 11 3 3L22 4"/>
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                style="width: 16px; height: 16px; margin-right: 8px;">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                <path d="m9 11 3 3L22 4" />
             </svg>
             クーポンを発行しました。取り消す場合は
         </div>
@@ -1091,7 +1109,7 @@
             const screens = document.querySelectorAll('.screen');
             screens.forEach(screen => screen.classList.remove('active'));
             document.getElementById(screenId).classList.add('active');
-            
+
             if (screenId === 'wizard') {
                 currentStep = 1;
                 updateWizardStep();
@@ -1103,7 +1121,7 @@
             const items = document.querySelectorAll('.radio-item');
             items.forEach(item => item.classList.remove('selected'));
             event.currentTarget.classList.add('selected');
-            
+
             const purposeMap = {
                 'new-customer': '新規顧客獲得',
                 'retention': '既存顧客の維持',
@@ -1141,11 +1159,11 @@
         function confirmIssueCoupon() {
             // モーダルを閉じる
             closeConfirmModal();
-            
+
             // Snackbarを表示
             const snackbar = document.getElementById('snackbar');
             snackbar.classList.add('show');
-            
+
             // 3秒後にSnackbarを非表示にしてダッシュボードに戻る
             setTimeout(() => {
                 snackbar.classList.remove('show');
@@ -1158,7 +1176,7 @@
         function undoCouponIssue() {
             // Snackbarを非表示
             document.getElementById('snackbar').classList.remove('show');
-            
+
             // アラート表示（実際の実装では発行取り消し処理）
             setTimeout(() => {
                 alert('クーポン発行を取り消しました。\n\n対象者へのメール送信は停止されました。');
@@ -1201,12 +1219,12 @@
         }
 
         // 割引率変更時のROI更新
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const discountInput = document.getElementById('discount-rate');
             const roiPreview = document.getElementById('roi-preview');
-            
+
             if (discountInput && roiPreview) {
-                discountInput.addEventListener('input', function() {
+                discountInput.addEventListener('input', function () {
                     const rate = parseInt(this.value);
                     let roi = 150 - (rate * 2); // 簡単な計算例
                     roi = Math.max(roi, 80); // 最低値を設定
@@ -1216,16 +1234,16 @@
 
             // モーダル関連のイベントリスナー
             const modalOverlay = document.getElementById('confirmModal');
-            
+
             // ESCキーでモーダルを閉じる
-            document.addEventListener('keydown', function(e) {
+            document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape' && modalOverlay.classList.contains('show')) {
                     closeConfirmModal();
                 }
             });
-            
+
             // モーダル外クリックで閉じる
-            modalOverlay.addEventListener('click', function(e) {
+            modalOverlay.addEventListener('click', function (e) {
                 if (e.target === modalOverlay) {
                     closeConfirmModal();
                 }
@@ -1233,4 +1251,5 @@
         });
     </script>
 </body>
+
 </html>

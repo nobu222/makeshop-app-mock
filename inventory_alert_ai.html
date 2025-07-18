@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +30,7 @@
             background: white;
             padding: 16px 24px;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
@@ -38,7 +39,7 @@
 
         .back-to-home {
             position: absolute;
-            top: 0;
+            top: 24px;
             left: 0;
             background: #3b82f6;
             color: white;
@@ -97,7 +98,7 @@
         .card {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -391,13 +392,14 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container" style="position: relative; padding-top: 60px;">
         <a href="index.html" class="back-to-home">
             <span>←</span>
             ポータルに戻る
         </a>
-        
+
         <div class="header">
             <h1>在庫アラートAI</h1>
             <div class="nav-tabs">
@@ -508,7 +510,7 @@
                 <i data-lucide="arrow-left" size="16"></i>
                 ダッシュボードに戻る
             </button>
-            
+
             <div class="panel">
                 <div class="card">
                     <div class="card-header">
@@ -525,7 +527,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-top: 24px;">
                             <div style="text-align: center; padding: 16px; background: #fef2f2; border-radius: 8px;">
                                 <div style="font-size: 24px; font-weight: 600; color: #dc2626;">5日</div>
@@ -590,12 +592,14 @@
                         <div class="step-number">1</div>
                         <div>数量入力</div>
                     </div>
-                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;"></div>
+                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;">
+                    </div>
                     <div class="step">
                         <div class="step-number">2</div>
                         <div>仕入先確認</div>
                     </div>
-                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;"></div>
+                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;">
+                    </div>
                     <div class="step">
                         <div class="step-number">3</div>
                         <div>確定</div>
@@ -655,15 +659,15 @@
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
-            
+
             // 指定された画面を表示
             document.getElementById(screenId).classList.add('active');
-            
+
             // タブのアクティブ状態更新
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             // 対応するタブをアクティブに
             const tabs = document.querySelectorAll('.nav-tab');
             if (screenId === 'dashboard') tabs[0].classList.add('active');
@@ -693,7 +697,7 @@
 
         // フィルターボタンのクリックイベント
         document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 // 同じグループ内の他のボタンからactiveクラスを除去
                 this.parentElement.querySelectorAll('.filter-btn').forEach(b => {
                     b.classList.remove('active');
@@ -704,4 +708,5 @@
         });
     </script>
 </body>
+
 </html>

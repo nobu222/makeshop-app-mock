@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>売上インサイトAI - MakeShop</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Noto Sans JP', sans-serif;
             background-color: #F5F7FA;
@@ -20,19 +21,19 @@
             font-size: 14px;
             min-height: 100vh;
         }
-        
+
         .container {
             max-width: 1366px;
             margin: 0 auto;
             padding: 24px;
         }
-        
+
         .header {
             background: white;
             padding: 16px 24px;
             border-radius: 8px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -40,7 +41,7 @@
 
         .back-to-home {
             position: absolute;
-            top: 0;
+            top: 24px;
             left: 0;
             background: #246BFD;
             color: white;
@@ -63,7 +64,7 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(36, 107, 253, 0.4);
         }
-        
+
         .header h1 {
             font-size: 24px;
             font-weight: 600;
@@ -72,36 +73,36 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .icon {
             width: 24px;
             height: 24px;
             fill: currentColor;
         }
-        
+
         .screen {
             display: none;
         }
-        
+
         .screen.active {
             display: block;
         }
-        
+
         .card {
             background: white;
             border-radius: 8px;
             padding: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
             margin-bottom: 24px;
         }
-        
+
         .card h2 {
             font-size: 18px;
             font-weight: 600;
             margin-bottom: 16px;
             color: #1A1A1A;
         }
-        
+
         .badge {
             display: inline-flex;
             align-items: center;
@@ -110,27 +111,27 @@
             font-size: 12px;
             font-weight: 500;
         }
-        
+
         .badge.success {
             background: #E8F5E8;
             color: #2EB67D;
         }
-        
+
         .badge.warning {
             background: #FFF3E0;
             color: #F5A623;
         }
-        
+
         .badge.danger {
             background: #FFE8E8;
             color: #E03A3E;
         }
-        
+
         .badge.primary {
             background: #F8FAFF;
             color: #246BFD;
         }
-        
+
         .btn {
             padding: 12px 24px;
             border-radius: 4px;
@@ -144,39 +145,39 @@
             align-items: center;
             gap: 8px;
         }
-        
+
         .btn-primary {
             background: #246BFD;
             color: white;
         }
-        
+
         .btn-primary:hover {
             background: #1E5BDC;
         }
-        
+
         .btn-secondary {
             background: #F5F7FA;
             color: #666;
             border: 1px solid #E1E5E9;
         }
-        
+
         .btn-secondary:hover {
             background: #E8EBF0;
         }
-        
+
         .table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 16px;
         }
-        
+
         .table th,
         .table td {
             padding: 12px 16px;
             text-align: left;
             border-bottom: 1px solid #E1E5E9;
         }
-        
+
         .table th {
             font-weight: 600;
             background: #F8F9FA;
@@ -185,26 +186,26 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .filters {
             display: flex;
             gap: 16px;
             margin-bottom: 24px;
             align-items: center;
         }
-        
+
         .filter-group {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
-        
+
         .filter-label {
             font-size: 12px;
             font-weight: 500;
             color: #666;
         }
-        
+
         .dropdown {
             padding: 8px 12px;
             border: 1px solid #E1E5E9;
@@ -213,35 +214,35 @@
             font-size: 14px;
             cursor: pointer;
         }
-        
+
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 16px;
             margin-bottom: 24px;
         }
-        
+
         .kpi-card {
             background: white;
             padding: 20px;
             border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
-        
+
         .kpi-title {
             font-size: 12px;
             color: #666;
             margin-bottom: 8px;
             font-weight: 500;
         }
-        
+
         .kpi-value {
             font-size: 24px;
             font-weight: 700;
             color: #1A1A1A;
             margin-bottom: 4px;
         }
-        
+
         .kpi-change {
             font-size: 12px;
             font-weight: 500;
@@ -249,32 +250,32 @@
             align-items: center;
             gap: 4px;
         }
-        
+
         .kpi-change.positive {
             color: #2EB67D;
         }
-        
+
         .kpi-change.negative {
             color: #E03A3E;
         }
-        
+
         .trend-arrow {
             width: 16px;
             height: 16px;
         }
-        
+
         .trend-up {
             color: #2EB67D;
         }
-        
+
         .trend-down {
             color: #E03A3E;
         }
-        
+
         .trend-flat {
             color: #666;
         }
-        
+
         /* オーバーレイモーダル */
         .overlay {
             position: fixed;
@@ -291,12 +292,12 @@
             visibility: hidden;
             transition: all 0.3s;
         }
-        
+
         .overlay.show {
             opacity: 1;
             visibility: visible;
         }
-        
+
         .insight-panel {
             background: white;
             border-radius: 8px;
@@ -307,11 +308,11 @@
             transform: scale(0.9);
             transition: transform 0.3s;
         }
-        
+
         .overlay.show .insight-panel {
             transform: scale(1);
         }
-        
+
         .panel-header {
             padding: 24px 24px 16px 24px;
             border-bottom: 1px solid #E1E5E9;
@@ -319,13 +320,13 @@
             align-items: center;
             justify-content: space-between;
         }
-        
+
         .sku-header {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-        
+
         .panel-close {
             background: none;
             border: none;
@@ -333,29 +334,29 @@
             cursor: pointer;
             color: #666;
         }
-        
+
         .panel-body {
             padding: 24px;
         }
-        
+
         .analysis-section {
             margin-bottom: 24px;
         }
-        
+
         .analysis-title {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 12px;
             color: #1A1A1A;
         }
-        
+
         .factor-list {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
             margin-bottom: 16px;
         }
-        
+
         .factor-tag {
             padding: 6px 12px;
             background: #F8F9FA;
@@ -364,25 +365,25 @@
             font-size: 12px;
             color: #666;
         }
-        
+
         .factor-tag.highlight {
             background: #FFF3E0;
             border-color: #F5A623;
             color: #A0500A;
         }
-        
+
         .recommendations {
             display: flex;
             flex-direction: column;
             gap: 12px;
         }
-        
+
         .recommendation {
             border: 1px solid #E1E5E9;
             border-radius: 8px;
             overflow: hidden;
         }
-        
+
         .recommendation-header {
             padding: 16px;
             background: #F8F9FA;
@@ -391,45 +392,45 @@
             align-items: center;
             justify-content: space-between;
         }
-        
+
         .recommendation-header:hover {
             background: #F0F2F5;
         }
-        
+
         .recommendation-title {
             font-weight: 600;
             color: #1A1A1A;
         }
-        
+
         .recommendation-impact {
             font-size: 12px;
             color: #2EB67D;
             font-weight: 500;
         }
-        
+
         .recommendation-content {
             padding: 16px;
             background: white;
             display: none;
         }
-        
+
         .recommendation.expanded .recommendation-content {
             display: block;
         }
-        
+
         .recommendation-details {
             margin-bottom: 16px;
             font-size: 14px;
             color: #666;
         }
-        
+
         /* タブ */
         .tabs {
             display: flex;
             border-bottom: 1px solid #E1E5E9;
             margin-bottom: 24px;
         }
-        
+
         .tab {
             padding: 12px 24px;
             border: none;
@@ -441,36 +442,36 @@
             border-bottom: 2px solid transparent;
             transition: all 0.2s;
         }
-        
+
         .tab.active {
             color: #246BFD;
             border-bottom-color: #246BFD;
         }
-        
+
         .tab-content {
             display: none;
         }
-        
+
         .tab-content.active {
             display: block;
         }
-        
+
         /* チャート */
         .chart-container {
             background: white;
             border-radius: 8px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
         }
-        
+
         .chart-title {
             font-size: 16px;
             font-weight: 600;
             margin-bottom: 16px;
             color: #1A1A1A;
         }
-        
+
         .chart-placeholder {
             height: 300px;
             background: linear-gradient(135deg, #F8FAFF 0%, #E8F5E8 100%);
@@ -482,14 +483,14 @@
             font-size: 14px;
             border: 1px dashed #D1D5DB;
         }
-        
+
         .heatmap-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 4px;
             margin-top: 16px;
         }
-        
+
         .heatmap-cell {
             aspect-ratio: 1;
             border-radius: 2px;
@@ -500,19 +501,19 @@
             font-weight: 500;
             color: white;
         }
-        
+
         .heatmap-cell.high {
             background: #2EB67D;
         }
-        
+
         .heatmap-cell.medium {
             background: #F5A623;
         }
-        
+
         .heatmap-cell.low {
             background: #E03A3E;
         }
-        
+
         .heatmap-label {
             font-size: 10px;
             color: #666;
@@ -521,19 +522,20 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container" style="position: relative; padding-top: 60px;">
         <a href="index.html" class="back-to-home">
             <span>←</span>
             ポータルに戻る
         </a>
-        
+
         <!-- ヘッダー -->
         <div class="header">
             <h1>
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M3 3v18h18"/>
-                    <path d="m19 9-5 5-4-4-3 3"/>
+                    <path d="M3 3v18h18" />
+                    <path d="m19 9-5 5-4-4-3 3" />
                 </svg>
                 売上インサイトAI - MakeShop
             </h1>
@@ -560,9 +562,10 @@
                     </select>
                 </div>
                 <button class="btn btn-secondary" onclick="showScreen('analysis')" style="margin-left: auto;">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
-                        <path d="M3 3v18h18"/>
-                        <path d="m19 9-5 5-4-4-3 3"/>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="width: 16px; height: 16px;">
+                        <path d="M3 3v18h18" />
+                        <path d="m19 9-5 5-4-4-3 3" />
                     </svg>
                     詳細分析を見る
                 </button>
@@ -575,8 +578,8 @@
                     <div class="kpi-value">¥1,280,000</div>
                     <div class="kpi-change positive">
                         <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m5 12 7-7 7 7"/>
-                            <path d="M12 19V5"/>
+                            <path d="m5 12 7-7 7 7" />
+                            <path d="M12 19V5" />
                         </svg>
                         前週比 +8.2% (+¥97,200)
                     </div>
@@ -586,8 +589,8 @@
                     <div class="kpi-value">24</div>
                     <div class="kpi-change positive">
                         <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m5 12 7-7 7 7"/>
-                            <path d="M12 19V5"/>
+                            <path d="m5 12 7-7 7 7" />
+                            <path d="M12 19V5" />
                         </svg>
                         +3 SKU (前週比)
                     </div>
@@ -597,8 +600,8 @@
                     <div class="kpi-value">+12.4%</div>
                     <div class="kpi-change positive">
                         <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m5 12 7-7 7 7"/>
-                            <path d="M12 19V5"/>
+                            <path d="m5 12 7-7 7 7" />
+                            <path d="M12 19V5" />
                         </svg>
                         +2.1% (前週比)
                     </div>
@@ -608,8 +611,8 @@
                     <div class="kpi-value">7</div>
                     <div class="kpi-change negative">
                         <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="m19 12-7 7-7-7"/>
-                            <path d="M12 5v14"/>
+                            <path d="m19 12-7 7-7-7" />
+                            <path d="M12 5v14" />
                         </svg>
                         -15%以下の低下
                     </div>
@@ -619,9 +622,10 @@
             <!-- トレンドリスト -->
             <div class="card">
                 <h2>
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display: inline; margin-right: 8px;">
-                        <path d="M3 3v18h18"/>
-                        <path d="m19 9-5 5-4-4-3 3"/>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        style="display: inline; margin-right: 8px;">
+                        <path d="M3 3v18h18" />
+                        <path d="m19 9-5 5-4-4-3 3" />
                     </svg>
                     SKU別売上トレンド
                 </h2>
@@ -640,7 +644,8 @@
                         <tr style="cursor: pointer;" onclick="showInsightPanel('リネンシャツ（ホワイト）', 'growth')">
                             <td>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div style="width: 32px; height: 32px; background: #F0F2F5; border-radius: 4px;"></div>
+                                    <div style="width: 32px; height: 32px; background: #F0F2F5; border-radius: 4px;">
+                                    </div>
                                     <div>
                                         <div style="font-weight: 500;">リネンシャツ（ホワイト）</div>
                                         <div style="font-size: 12px; color: #666;">SKU-SHIRT-001</div>
@@ -650,9 +655,10 @@
                             <td>¥145,200</td>
                             <td><span class="badge success">+42.1%</span></td>
                             <td class="trend-up">
-                                <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="m5 12 7-7 7 7"/>
-                                    <path d="M12 19V5"/>
+                                <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="m5 12 7-7 7 7" />
+                                    <path d="M12 19V5" />
                                 </svg>
                             </td>
                             <td>
@@ -664,7 +670,8 @@
                         <tr style="cursor: pointer;" onclick="showInsightPanel('デニムパンツ（インディゴ）', 'growth')">
                             <td>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div style="width: 32px; height: 32px; background: #F0F2F5; border-radius: 4px;"></div>
+                                    <div style="width: 32px; height: 32px; background: #F0F2F5; border-radius: 4px;">
+                                    </div>
                                     <div>
                                         <div style="font-weight: 500;">デニムパンツ（インディゴ）</div>
                                         <div style="font-size: 12px; color: #666;">SKU-DENIM-002</div>
@@ -674,9 +681,10 @@
                             <td>¥98,400</td>
                             <td><span class="badge success">+28.7%</span></td>
                             <td class="trend-up">
-                                <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="m5 12 7-7 7 7"/>
-                                    <path d="M12 19V5"/>
+                                <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="m5 12 7-7 7 7" />
+                                    <path d="M12 19V5" />
                                 </svg>
                             </td>
                             <td>
@@ -688,7 +696,8 @@
                         <tr style="cursor: pointer;" onclick="showInsightPanel('ニットカーディガン（グレー）', 'decline')">
                             <td>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div style="width: 32px; height: 32px; background: #F0F2F5; border-radius: 4px;"></div>
+                                    <div style="width: 32px; height: 32px; background: #F0F2F5; border-radius: 4px;">
+                                    </div>
                                     <div>
                                         <div style="font-weight: 500;">ニットカーディガン（グレー）</div>
                                         <div style="font-size: 12px; color: #666;">SKU-KNIT-003</div>
@@ -698,9 +707,10 @@
                             <td>¥42,100</td>
                             <td><span class="badge danger">-18.5%</span></td>
                             <td class="trend-down">
-                                <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="m19 12-7 7-7-7"/>
-                                    <path d="M12 5v14"/>
+                                <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="m19 12-7 7-7-7" />
+                                    <path d="M12 5v14" />
                                 </svg>
                             </td>
                             <td>
@@ -712,7 +722,8 @@
                         <tr style="cursor: pointer;" onclick="showInsightPanel('ワンピース（フローラル）', 'stable')">
                             <td>
                                 <div style="display: flex; align-items: center; gap: 8px;">
-                                    <div style="width: 32px; height: 32px; background: #F0F2F5; border-radius: 4px;"></div>
+                                    <div style="width: 32px; height: 32px; background: #F0F2F5; border-radius: 4px;">
+                                    </div>
                                     <div>
                                         <div style="font-weight: 500;">ワンピース（フローラル）</div>
                                         <div style="font-size: 12px; color: #666;">SKU-DRESS-004</div>
@@ -722,8 +733,9 @@
                             <td>¥76,800</td>
                             <td><span class="badge warning">+2.1%</span></td>
                             <td class="trend-flat">
-                                <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <path d="M5 12h14"/>
+                                <svg class="trend-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14" />
                                 </svg>
                             </td>
                             <td>
@@ -750,9 +762,11 @@
                 <div class="panel-body">
                     <div class="analysis-section">
                         <div class="analysis-title">
-                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
-                                <circle cx="12" cy="12" r="3"/>
-                                <path d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24"/>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
+                                <circle cx="12" cy="12" r="3" />
+                                <path
+                                    d="M12 1v6M12 17v6M4.22 4.22l4.24 4.24M15.54 15.54l4.24 4.24M1 12h6M17 12h6M4.22 19.78l4.24-4.24M15.54 8.46l4.24-4.24" />
                             </svg>
                             成長要因分析
                         </div>
@@ -769,8 +783,9 @@
 
                     <div class="analysis-section">
                         <div class="analysis-title">
-                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
-                                <path d="M9.663 17h4.673M12 3l1.5 6L21 12l-7.5 3L12 21l-1.5-6L3 12l7.5-3L12 3Z"/>
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                style="width: 16px; height: 16px; display: inline; margin-right: 4px;">
+                                <path d="M9.663 17h4.673M12 3l1.5 6L21 12l-7.5 3L12 21l-1.5-6L3 12l7.5-3L12 3Z" />
                             </svg>
                             AI推奨アクション
                         </div>
@@ -823,8 +838,9 @@
         <!-- 画面3: 詳細分析タブ -->
         <div class="screen" id="analysis">
             <button class="btn btn-secondary" onclick="showScreen('dashboard')" style="margin-bottom: 24px;">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
-                    <path d="m15 18-6-6 6-6"/>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    style="width: 16px; height: 16px;">
+                    <path d="m15 18-6-6 6-6" />
                 </svg>
                 ダッシュボードに戻る
             </button>
@@ -841,14 +857,14 @@
                 <div class="chart-container">
                     <div class="chart-title">SKU別売上推移（過去12週間）</div>
                     <div class="chart-placeholder">
-                        📈 ラインチャート: SKU別売上推移<br/>
+                        📈 ラインチャート: SKU別売上推移<br />
                         <small>実装時はChart.jsやD3.jsで動的チャートを表示</small>
                     </div>
                 </div>
                 <div class="chart-container">
                     <div class="chart-title">カテゴリ別売上構成比</div>
                     <div class="chart-placeholder">
-                        🥧 パイチャート: カテゴリ別構成比<br/>
+                        🥧 パイチャート: カテゴリ別構成比<br />
                         <small>シャツ 42% | パンツ 28% | ワンピース 18% | その他 12%</small>
                     </div>
                 </div>
@@ -859,14 +875,14 @@
                 <div class="chart-container">
                     <div class="chart-title">月初コホート分析</div>
                     <div class="chart-placeholder">
-                        📊 エリアチャート: コホート別リテンション<br/>
+                        📊 エリアチャート: コホート別リテンション<br />
                         <small>月初購入者の継続購買率を追跡</small>
                     </div>
                 </div>
                 <div class="chart-container">
                     <div class="chart-title">顧客LTV推移</div>
                     <div class="chart-placeholder">
-                        📈 LTVトレンド: ¥24,500 (+5.2%)<br/>
+                        📈 LTVトレンド: ¥24,500 (+5.2%)<br />
                         <small>過去6ヶ月の平均LTV推移</small>
                     </div>
                 </div>
@@ -903,15 +919,21 @@
                     </div>
                     <div style="margin-top: 16px; font-size: 12px; color: #666;">
                         <span style="display: inline-flex; align-items: center; margin-right: 16px;">
-                            <div style="width: 12px; height: 12px; background: #2EB67D; border-radius: 2px; margin-right: 4px;"></div>
+                            <div
+                                style="width: 12px; height: 12px; background: #2EB67D; border-radius: 2px; margin-right: 4px;">
+                            </div>
                             高回転 (3.0以上)
                         </span>
                         <span style="display: inline-flex; align-items: center; margin-right: 16px;">
-                            <div style="width: 12px; height: 12px; background: #F5A623; border-radius: 2px; margin-right: 4px;"></div>
+                            <div
+                                style="width: 12px; height: 12px; background: #F5A623; border-radius: 2px; margin-right: 4px;">
+                            </div>
                             中回転 (1.5-3.0)
                         </span>
                         <span style="display: inline-flex; align-items: center;">
-                            <div style="width: 12px; height: 12px; background: #E03A3E; border-radius: 2px; margin-right: 4px;"></div>
+                            <div
+                                style="width: 12px; height: 12px; background: #E03A3E; border-radius: 2px; margin-right: 4px;">
+                            </div>
                             低回転 (1.5未満)
                         </span>
                     </div>
@@ -926,17 +948,19 @@
                         <div style="font-size: 14px; color: #666; margin-bottom: 16px;">
                             分析データをCSV形式でダウンロードできます。Excel等での詳細分析にご活用ください。
                         </div>
-                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
                             <div style="border: 1px solid #E1E5E9; border-radius: 8px; padding: 16px;">
                                 <div style="font-weight: 600; margin-bottom: 8px;">SKU別売上データ</div>
                                 <div style="font-size: 12px; color: #666; margin-bottom: 12px;">
                                     過去12週間のSKU別売上推移、変化率、在庫情報
                                 </div>
                                 <button class="btn btn-primary">
-                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                        <polyline points="7,10 12,15 17,10"/>
-                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" style="width: 16px; height: 16px;">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="7,10 12,15 17,10" />
+                                        <line x1="12" y1="15" x2="12" y2="3" />
                                     </svg>
                                     CSVダウンロード
                                 </button>
@@ -947,10 +971,11 @@
                                     コホート分析、LTV、リピート率データ
                                 </div>
                                 <button class="btn btn-primary">
-                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                        <polyline points="7,10 12,15 17,10"/>
-                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" style="width: 16px; height: 16px;">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="7,10 12,15 17,10" />
+                                        <line x1="12" y1="15" x2="12" y2="3" />
                                     </svg>
                                     CSVダウンロード
                                 </button>
@@ -961,10 +986,11 @@
                                     SKU別在庫回転率、回転日数、適正在庫量
                                 </div>
                                 <button class="btn btn-primary">
-                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
-                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                                        <polyline points="7,10 12,15 17,10"/>
-                                        <line x1="12" y1="15" x2="12" y2="3"/>
+                                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        stroke-width="2" style="width: 16px; height: 16px;">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                        <polyline points="7,10 12,15 17,10" />
+                                        <line x1="12" y1="15" x2="12" y2="3" />
                                     </svg>
                                     CSVダウンロード
                                 </button>
@@ -985,7 +1011,7 @@
 
         function showInsightPanel(skuName, type) {
             document.getElementById('sku-name').textContent = skuName;
-            
+
             // 分析内容を動的に変更
             const factorList = document.getElementById('factor-list');
             if (type === 'decline') {
@@ -1009,7 +1035,7 @@
                     <div class="factor-tag">競合状況変化なし</div>
                 `;
             }
-            
+
             document.getElementById('insightOverlay').classList.add('show');
         }
 
@@ -1034,18 +1060,19 @@
         }
 
         // ESCキーでオーバーレイを閉じる
-        document.addEventListener('keydown', function(e) {
+        document.addEventListener('keydown', function (e) {
             if (e.key === 'Escape') {
                 closeInsightPanel();
             }
         });
 
         // オーバーレイ外クリックで閉じる
-        document.getElementById('insightOverlay').addEventListener('click', function(e) {
+        document.getElementById('insightOverlay').addEventListener('click', function (e) {
             if (e.target === this) {
                 closeInsightPanel();
             }
         });
     </script>
 </body>
+
 </html>

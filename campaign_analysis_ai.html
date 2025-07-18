@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +30,7 @@
             background: white;
             padding: 16px 24px;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
@@ -38,7 +39,7 @@
 
         .back-to-home {
             position: absolute;
-            top: 0;
+            top: 24px;
             left: 0;
             background: #3b82f6;
             color: white;
@@ -97,7 +98,7 @@
         .card {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -105,7 +106,7 @@
             background: white;
             padding: 24px;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             margin-bottom: 24px;
         }
 
@@ -146,7 +147,7 @@
         .campaign-card {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             cursor: pointer;
             transition: all 0.2s;
@@ -155,7 +156,7 @@
 
         .campaign-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             border-color: #3b82f6;
         }
 
@@ -385,7 +386,8 @@
             font-weight: 500;
         }
 
-        .form-input, .form-select {
+        .form-input,
+        .form-select {
             width: 100%;
             padding: 12px 16px;
             border: 1px solid #e2e8f0;
@@ -393,7 +395,8 @@
             font-size: 14px;
         }
 
-        .form-input:focus, .form-select:focus {
+        .form-input:focus,
+        .form-select:focus {
             outline: none;
             border-color: #3b82f6;
         }
@@ -492,13 +495,14 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container" style="position: relative; padding-top: 60px;">
         <a href="index.html" class="back-to-home">
             <span>←</span>
             ポータルに戻る
         </a>
-        
+
         <div class="header">
             <h1>キャンペーン診断AI</h1>
             <div class="nav-tabs">
@@ -643,7 +647,7 @@
                 <div class="card">
                     <div style="padding: 24px;">
                         <h2 style="margin-bottom: 24px;">母の日キャンペーン 2024 - 診断結果</h2>
-                        
+
                         <div class="ai-summary">
                             <div class="ai-summary-header">
                                 <i data-lucide="brain" size="20"></i>
@@ -711,7 +715,7 @@
                     <div class="card" style="margin-bottom: 24px;">
                         <div style="padding: 24px;">
                             <h3 style="margin-bottom: 16px;">🔴 ボトルネック指摘</h3>
-                            
+
                             <div class="bottleneck-item">
                                 <div class="bottleneck-title">Instagram広告効率</div>
                                 <div style="font-size: 14px;">
@@ -731,7 +735,7 @@
                     <div class="card">
                         <div style="padding: 24px;">
                             <h3 style="margin-bottom: 16px;">💡 改善提案</h3>
-                            
+
                             <div class="improvement-item">
                                 <div class="improvement-title">ギフト訴求強化</div>
                                 <div style="font-size: 14px;">
@@ -773,14 +777,17 @@
                 <div class="card">
                     <div style="padding: 24px;">
                         <h2 style="margin-bottom: 24px;">改善シミュレーション - 母の日キャンペーン</h2>
-                        
+
                         <div class="simulation-form">
                             <div>
                                 <div class="form-group">
                                     <label class="form-label">広告予算配分</label>
-                                    <div style="margin-bottom: 8px;">Facebook: <span class="range-value" id="facebookValue">60%</span></div>
-                                    <input type="range" class="range-input" min="30" max="80" value="60" onchange="updateFacebookBudget(this.value)">
-                                    <div style="margin-top: 8px; font-size: 12px; color: #64748b;">現在: Facebook 40%, Instagram 60%</div>
+                                    <div style="margin-bottom: 8px;">Facebook: <span class="range-value"
+                                            id="facebookValue">60%</span></div>
+                                    <input type="range" class="range-input" min="30" max="80" value="60"
+                                        onchange="updateFacebookBudget(this.value)">
+                                    <div style="margin-top: 8px; font-size: 12px; color: #64748b;">現在: Facebook 40%,
+                                        Instagram 60%</div>
                                 </div>
 
                                 <div class="form-group">
@@ -795,16 +802,20 @@
 
                                 <div class="form-group">
                                     <label class="form-label">ギフトサービス拡充</label>
-                                    <div style="margin-bottom: 8px;">追加コスト: <span class="range-value" id="giftCost">¥50,000</span></div>
-                                    <input type="range" class="range-input" min="0" max="100000" step="10000" value="50000" onchange="updateGiftCost(this.value)">
+                                    <div style="margin-bottom: 8px;">追加コスト: <span class="range-value"
+                                            id="giftCost">¥50,000</span></div>
+                                    <input type="range" class="range-input" min="0" max="100000" step="10000"
+                                        value="50000" onchange="updateGiftCost(this.value)">
                                 </div>
                             </div>
 
                             <div>
                                 <div class="form-group">
                                     <label class="form-label">割引率調整</label>
-                                    <div style="margin-bottom: 8px;">割引率: <span class="range-value" id="discountRate">15%</span></div>
-                                    <input type="range" class="range-input" min="5" max="30" value="15" onchange="updateDiscount(this.value)">
+                                    <div style="margin-bottom: 8px;">割引率: <span class="range-value"
+                                            id="discountRate">15%</span></div>
+                                    <input type="range" class="range-input" min="5" max="30" value="15"
+                                        onchange="updateDiscount(this.value)">
                                     <div style="margin-top: 8px; font-size: 12px; color: #64748b;">現在: 10%割引</div>
                                 </div>
 
@@ -883,13 +894,13 @@
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
-            
+
             document.getElementById(screenId).classList.add('active');
-            
+
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             const tabs = document.querySelectorAll('.nav-tab');
             if (screenId === 'history') tabs[0].classList.add('active');
             if (screenId === 'analysis') tabs[1].classList.add('active');
@@ -941,10 +952,10 @@
             const improvement = Math.random() * 0.3 + 0.1; // 10-40%改善
             const newSales = Math.round(baseSales * (1 + improvement));
             const salesChange = Math.round(improvement * 100);
-            
+
             document.getElementById('projectedSales').textContent = '¥' + (newSales / 1000000).toFixed(1) + 'M';
             document.getElementById('salesChange').textContent = '+' + salesChange + '% vs 実績';
-            
+
             const newROI = Math.round(180 + (improvement * 100));
             document.getElementById('projectedROI').textContent = newROI + '%';
             document.getElementById('roiChange').textContent = '+' + Math.round(improvement * 100) + 'pt vs 実績';
@@ -952,7 +963,7 @@
 
         // フィルターボタンのクリックイベント
         document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 this.parentElement.querySelectorAll('.filter-btn').forEach(b => {
                     b.classList.remove('active');
                 });
@@ -961,4 +972,5 @@
         });
     </script>
 </body>
+
 </html>

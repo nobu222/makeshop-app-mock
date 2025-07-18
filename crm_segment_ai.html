@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -29,7 +30,7 @@
             background: white;
             padding: 16px 24px;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             margin-bottom: 24px;
             display: flex;
             justify-content: space-between;
@@ -38,7 +39,7 @@
 
         .back-to-home {
             position: absolute;
-            top: 0;
+            top: 24px;
             left: 0;
             background: #3b82f6;
             color: white;
@@ -97,7 +98,7 @@
         .card {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
@@ -144,7 +145,7 @@
         .segment-card {
             background: white;
             border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
             overflow: hidden;
             cursor: pointer;
             transition: all 0.2s;
@@ -153,7 +154,7 @@
 
         .segment-card:hover {
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             border-color: #3b82f6;
         }
 
@@ -451,7 +452,8 @@
             font-weight: 500;
         }
 
-        .form-input, .form-select {
+        .form-input,
+        .form-select {
             width: 100%;
             padding: 12px 16px;
             border: 1px solid #e2e8f0;
@@ -459,7 +461,8 @@
             font-size: 14px;
         }
 
-        .form-input:focus, .form-select:focus {
+        .form-input:focus,
+        .form-select:focus {
             outline: none;
             border-color: #3b82f6;
         }
@@ -624,13 +627,14 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container" style="position: relative; padding-top: 60px;">
         <a href="index.html" class="back-to-home">
             <span>←</span>
             ポータルに戻る
         </a>
-        
+
         <div class="header">
             <h1>CRMセグメントAI</h1>
             <div class="nav-tabs">
@@ -803,7 +807,7 @@
                 <div class="card">
                     <div style="padding: 24px;">
                         <h2 style="margin-bottom: 24px;">ロイヤル顧客セグメント - 詳細分析</h2>
-                        
+
                         <div class="chart-container">
                             <div style="text-align: center;">
                                 <i data-lucide="pie-chart" size="48" style="margin-bottom: 16px;"></i>
@@ -838,7 +842,7 @@
                             </div>
                             <div class="characteristic-item">
                                 <span class="characteristic-label">
-                                    予想LTV 
+                                    予想LTV
                                     <span class="tooltip" data-tooltip="過去の購入パターンから算出した生涯価値">
                                         <i data-lucide="info" size="14"></i>
                                     </span>
@@ -915,12 +919,14 @@
                         <div class="step-number">1</div>
                         <div>AI推奨条件</div>
                     </div>
-                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;"></div>
+                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;">
+                    </div>
                     <div class="step">
                         <div class="step-number">2</div>
                         <div>条件調整</div>
                     </div>
-                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;"></div>
+                    <div style="width: 40px; height: 1px; background: #e2e8f0; margin: 0 16px; align-self: center;">
+                    </div>
                     <div class="step">
                         <div class="step-number">3</div>
                         <div>確認・保存</div>
@@ -930,7 +936,7 @@
                 <div class="card">
                     <div style="padding: 24px;">
                         <h2 style="margin-bottom: 24px;">新しいセグメント作成</h2>
-                        
+
                         <div class="form-group">
                             <label class="form-label">セグメント作成目的</label>
                             <select class="form-select" onchange="generateRecommendations(this.value)">
@@ -1116,13 +1122,13 @@
             document.querySelectorAll('.screen').forEach(screen => {
                 screen.classList.remove('active');
             });
-            
+
             document.getElementById(screenId).classList.add('active');
-            
+
             document.querySelectorAll('.nav-tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-            
+
             const tabs = document.querySelectorAll('.nav-tab');
             if (screenId === 'dashboard') tabs[0].classList.add('active');
             if (screenId === 'detail') tabs[1].classList.add('active');
@@ -1197,7 +1203,7 @@
 
         // フィルターボタンのクリックイベント
         document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
+            btn.addEventListener('click', function () {
                 if (!this.classList.contains('btn-primary')) {
                     this.parentElement.querySelectorAll('.filter-btn:not(.btn-primary)').forEach(b => {
                         b.classList.remove('active');
@@ -1211,4 +1217,5 @@
         updatePreview();
     </script>
 </body>
+
 </html>

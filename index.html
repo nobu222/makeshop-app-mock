@@ -1,18 +1,19 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MakeShop AI拡張アプリ - サンプルモックサイト</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700&display=swap');
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
             font-family: 'Noto Sans JP', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -20,55 +21,55 @@
             min-height: 100vh;
             padding: 24px;
         }
-        
+
         .container {
             max-width: 1200px;
             margin: 0 auto;
         }
-        
+
         .header {
             text-align: center;
             margin-bottom: 48px;
         }
-        
+
         .header h1 {
             font-size: 42px;
             font-weight: 700;
             color: white;
             margin-bottom: 16px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
-        
+
         .header p {
             font-size: 18px;
-            color: rgba(255,255,255,0.9);
+            color: rgba(255, 255, 255, 0.9);
             font-weight: 400;
         }
-        
+
         .apps-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 24px;
             margin-bottom: 48px;
         }
-        
+
         .app-card {
             background: white;
             border-radius: 16px;
             padding: 32px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             transition: all 0.3s ease;
             text-decoration: none;
             color: inherit;
             position: relative;
             overflow: hidden;
         }
-        
+
         .app-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
         }
-        
+
         .app-card::before {
             content: '';
             position: absolute;
@@ -78,7 +79,7 @@
             height: 4px;
             background: linear-gradient(90deg, #246BFD, #00D4FF);
         }
-        
+
         .app-icon {
             width: 64px;
             height: 64px;
@@ -91,26 +92,26 @@
             font-size: 28px;
             color: white;
         }
-        
+
         .app-card h3 {
             font-size: 24px;
             font-weight: 600;
             margin-bottom: 12px;
             color: #1A1A1A;
         }
-        
+
         .app-card p {
             font-size: 16px;
             color: #666;
             line-height: 1.6;
             margin-bottom: 16px;
         }
-        
+
         .app-features {
             list-style: none;
             margin-bottom: 24px;
         }
-        
+
         .app-features li {
             font-size: 14px;
             color: #888;
@@ -118,7 +119,7 @@
             padding-left: 16px;
             position: relative;
         }
-        
+
         .app-features li::before {
             content: '✓';
             position: absolute;
@@ -126,7 +127,7 @@
             color: #246BFD;
             font-weight: bold;
         }
-        
+
         .app-button {
             background: linear-gradient(135deg, #246BFD, #00D4FF);
             color: white;
@@ -140,44 +141,45 @@
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
-        
+
         .app-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 20px rgba(36, 107, 253, 0.3);
         }
-        
+
         .footer {
             text-align: center;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255, 255, 255, 0.8);
             font-size: 14px;
         }
-        
+
         @media (max-width: 768px) {
             .apps-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .header h1 {
                 font-size: 32px;
             }
-            
+
             .header p {
                 font-size: 16px;
             }
-            
+
             .app-card {
                 padding: 24px;
             }
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
-            <h1>MakeShop AI拡張アプリ</h1>
+            <h1>MakeShop AI拡張アプリ<br>サンプルモックサイト</h1>
             <p>最新のAI技術を活用したEC運営支援ツール群</p>
         </div>
-        
+
         <div class="apps-grid">
             <a href="campaign_analysis_ai.html" class="app-card">
                 <div class="app-icon">📊</div>
@@ -190,7 +192,7 @@
                 </ul>
                 <button class="app-button">アプリを開く</button>
             </a>
-            
+
             <a href="coupon_ai_mock.html" class="app-card">
                 <div class="app-icon">🎫</div>
                 <h3>クーポンAI</h3>
@@ -202,7 +204,7 @@
                 </ul>
                 <button class="app-button">アプリを開く</button>
             </a>
-            
+
             <a href="crm_segment_ai.html" class="app-card">
                 <div class="app-icon">👥</div>
                 <h3>CRMセグメントAI</h3>
@@ -214,7 +216,7 @@
                 </ul>
                 <button class="app-button">アプリを開く</button>
             </a>
-            
+
             <a href="inventory_alert_ai.html" class="app-card">
                 <div class="app-icon">📦</div>
                 <h3>在庫アラートAI</h3>
@@ -226,7 +228,7 @@
                 </ul>
                 <button class="app-button">アプリを開く</button>
             </a>
-            
+
             <a href="sales_insight_ai_mock.html" class="app-card">
                 <div class="app-icon">📈</div>
                 <h3>売上インサイトAI</h3>
@@ -239,10 +241,11 @@
                 <button class="app-button">アプリを開く</button>
             </a>
         </div>
-        
+
         <div class="footer">
             <p>&copy; 2024 MakeShop AI拡張アプリ. サンプルモックサイト</p>
         </div>
     </div>
 </body>
+
 </html>
